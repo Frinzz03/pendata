@@ -1,0 +1,148 @@
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/dist-packages/jupyter_core/utils/__init__.py", line 154, in wrapped
+    asyncio.get_running_loop()
+RuntimeError: no running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/dist-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/usr/local/lib/python3.11/dist-packages/nbclient/client.py", line 1319, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/jupyter_core/utils/__init__.py", line 158, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/usr/local/lib/python3.11/dist-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/usr/local/lib/python3.11/dist-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+import pymysql
+import psycopg2
+import pandas as pd
+
+# Konfigurasi koneksi ke database Aiven MySQL
+mysql_config = {
+    "host": "mysql23-112-irismysql23-112.h.aivencloud.com",
+    "user": "avnadmin",
+    "password": "AVNS_cTNd4CUt1kk0Z7MPIC1",
+    "database": "defaultdb",
+    "port": 15786
+}
+
+# Konfigurasi koneksi ke database Aiven PostgreSQL
+postgres_config = {
+    "host": "postgre23-112-postgresql23-112.h.aivencloud.com",
+    "database": "defaultdb",
+    "user": "avnadmin",
+    "password": "AVNS_Ellqk9Jx9uICNV-C29t",
+    "port": 15184
+}
+
+# Fungsi untuk mengambil data dari MySQL (hanya petal length & petal width)
+def fetch_mysql_data():
+    try:
+        conn = pymysql.connect(**mysql_config)
+        cursor = conn.cursor()
+        query = 'SELECT id, class, `petal length`, `petal width` FROM mysqliris.flowers;'
+        cursor.execute(query)
+        data = cursor.fetchall()
+        columns = [desc[0] for desc in cursor.description]  # Ambil nama kolom
+        cursor.close()
+        conn.close()
+        df = pd.DataFrame(data, columns=columns)
+
+        # Ubah nama kolom agar seragam
+        df = df.rename(columns={"petal length": "petal_length", "petal width": "petal_width"})
+
+        return df
+    except pymysql.err.OperationalError as e:
+        print(f"Error connecting to MySQL: {e}")
+        return pd.DataFrame()
+
+# Fungsi untuk mengambil data dari PostgreSQL (hanya sepal length & sepal width)
+def fetch_postgres_data():
+    try:
+        conn = psycopg2.connect(**postgres_config)
+        cursor = conn.cursor()
+        query = 'SELECT id, "Class", "sepal length", "sepal width" FROM postgresqliris.postgresql ORDER by id ASC;'
+        cursor.execute(query)
+        data = cursor.fetchall()
+        columns = [desc[0] for desc in cursor.description]  # Ambil nama kolom
+        cursor.close()
+        conn.close()
+        df = pd.DataFrame(data, columns=columns)
+
+        # Ubah nama kolom agar seragam
+        df = df.rename(columns={"Class": "class", "sepal length": "sepal_length", "sepal width": "sepal_width"})
+
+        return df
+    except psycopg2.OperationalError as e:
+        print(f"Error connecting to PostgreSQL: {e}")
+        return pd.DataFrame()
+
+# Ambil data dari kedua database
+mysql_df = fetch_mysql_data()
+postgres_df = fetch_postgres_data()
+
+# Gabungkan data berdasarkan id dan class
+combined_df = pd.merge(postgres_df, mysql_df, on=["id", "class"], how="inner")
+# combined_df = combined_df.apply(pd.to_numeric, errors='coerce')  # Mengubah semua kolom ke float
+# Tampilkan hasil
+print("\nData Gabungan dari MySQL dan PostgreSQL:")
+print(combined_df.to_string(index=False))
+# print(combined_df)
+------------------
+
+----- stdout -----
+Error connecting to MySQL: (2003, "Can't connect to MySQL server on 'mysql23-112-irismysql23-112.h.aivencloud.com' ([Errno -2] Name or service not known)")
+Error connecting to PostgreSQL: could not translate host name "postgre23-112-postgresql23-112.h.aivencloud.com" to address: Name or service not known
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mKeyError[0m                                  Traceback (most recent call last)
+[0;32m/tmp/ipython-input-5-309723036.py[0m in [0;36m<cell line: 0>[0;34m()[0m
+[1;32m     68[0m [0;34m[0m[0m
+[1;32m     69[0m [0;31m# Gabungkan data berdasarkan id dan class[0m[0;34m[0m[0;34m[0m[0m
+[0;32m---> 70[0;31m [0mcombined_df[0m [0;34m=[0m [0mpd[0m[0;34m.[0m[0mmerge[0m[0;34m([0m[0mpostgres_df[0m[0;34m,[0m [0mmysql_df[0m[0;34m,[0m [0mon[0m[0;34m=[0m[0;34m[[0m[0;34m"id"[0m[0;34m,[0m [0;34m"class"[0m[0;34m][0m[0;34m,[0m [0mhow[0m[0;34m=[0m[0;34m"inner"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     71[0m [0;31m# combined_df = combined_df.apply(pd.to_numeric, errors='coerce')  # Mengubah semua kolom ke float[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     72[0m [0;31m# Tampilkan hasil[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m/usr/local/lib/python3.11/dist-packages/pandas/core/reshape/merge.py[0m in [0;36mmerge[0;34m(left, right, how, on, left_on, right_on, left_index, right_index, sort, suffixes, copy, indicator, validate)[0m
+[1;32m    168[0m         )
+[1;32m    169[0m     [0;32melse[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[0;32m--> 170[0;31m         op = _MergeOperation(
+[0m[1;32m    171[0m             [0mleft_df[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+[1;32m    172[0m             [0mright_df[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m/usr/local/lib/python3.11/dist-packages/pandas/core/reshape/merge.py[0m in [0;36m__init__[0;34m(self, left, right, how, on, left_on, right_on, left_index, right_index, sort, suffixes, indicator, validate)[0m
+[1;32m    792[0m             [0mleft_drop[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+[1;32m    793[0m             [0mright_drop[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+[0;32m--> 794[0;31m         ) = self._get_merge_keys()
+[0m[1;32m    795[0m [0;34m[0m[0m
+[1;32m    796[0m         [0;32mif[0m [0mleft_drop[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m/usr/local/lib/python3.11/dist-packages/pandas/core/reshape/merge.py[0m in [0;36m_get_merge_keys[0;34m(self)[0m
+[1;32m   1295[0m                         [0mrk[0m [0;34m=[0m [0mcast[0m[0;34m([0m[0mHashable[0m[0;34m,[0m [0mrk[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m   1296[0m                         [0;32mif[0m [0mrk[0m [0;32mis[0m [0;32mnot[0m [0;32mNone[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[0;32m-> 1297[0;31m                             [0mright_keys[0m[0;34m.[0m[0mappend[0m[0;34m([0m[0mright[0m[0;34m.[0m[0m_get_label_or_level_values[0m[0;34m([0m[0mrk[0m[0;34m)[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m   1298[0m                         [0;32melse[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[1;32m   1299[0m                             [0;31m# work-around for merge_asof(right_index=True)[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m/usr/local/lib/python3.11/dist-packages/pandas/core/generic.py[0m in [0;36m_get_label_or_level_values[0;34m(self, key, axis)[0m
+[1;32m   1909[0m             [0mvalues[0m [0;34m=[0m [0mself[0m[0;34m.[0m[0maxes[0m[0;34m[[0m[0maxis[0m[0;34m][0m[0;34m.[0m[0mget_level_values[0m[0;34m([0m[0mkey[0m[0;34m)[0m[0;34m.[0m[0m_values[0m[0;34m[0m[0;34m[0m[0m
+[1;32m   1910[0m         [0;32melse[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[0;32m-> 1911[0;31m             [0;32mraise[0m [0mKeyError[0m[0;34m([0m[0mkey[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m   1912[0m [0;34m[0m[0m
+[1;32m   1913[0m         [0;31m# Check for duplicates[0m[0;34m[0m[0;34m[0m[0m
+
+[0;31mKeyError[0m: 'id'
+

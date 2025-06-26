@@ -1,0 +1,1077 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Analisis dan Implementasi Model Machine Learning untuk Klasifikasi Jamur (Beracun vs. Dapat Dimakan) pada Secondary Mushroom Dataset &#8212; My sample book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Pra_Uas';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="📌 Binning (Diskritisasi) Menggunakan K-Means Clustering" href="Binning%20%28Diskritisasi%20Menggunakan%20K-Mean%20Clustering%29.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="My sample book - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="My sample book - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Welcome to my website
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Penambangan%20Data%20_Data%20Understanding.html"><strong>Data Understanding</strong></a></li>
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="Mencari%20Outlayer.html"><strong>Mendeteksi Outlier Menggunakan K-Nearest Neighbors (KNN)</strong></a></li>
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="Local%20Outlier%20Factor%20%28LOF%29.html"><strong>Local Outlier Factor</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Naive%20Bayes.html"><strong>Naive Bayes</strong></a></li>
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="23-112_Fariel%20Nur%20Rizky%20Maulana_UTS_Pendat.html"><strong>Upload File csv</strong></a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="K-Mean.html"><strong>K-Mean</strong></a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="Decision%20Tree.html"><strong>🌳 Apa Itu Decision Tree?</strong></a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="Binning%20%28Diskritisasi%20Menggunakan%20K-Mean%20Clustering%29.html"><strong>📌 Binning (Diskritisasi) Menggunakan K-Means Clustering</strong></a></li>
+
+
+<li class="toctree-l1 current active"><a class="current reference internal" href="#"><strong>Analisis dan Implementasi Model Machine Learning untuk Klasifikasi Jamur (Beracun vs. Dapat Dimakan) pada Secondary Mushroom Dataset</strong></a></li>
+
+
+
+
+
+
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FPra_Uas.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/Pra_Uas.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Analisis dan Implementasi Model Machine Learning untuk Klasifikasi Jamur (Beracun vs. Dapat Dimakan) pada Secondary Mushroom Dataset</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#"><strong>Analisis dan Implementasi Model Machine Learning untuk Klasifikasi Jamur (Beracun vs. Dapat Dimakan) pada Secondary Mushroom Dataset</strong></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pendahuluan"><strong>Pendahuluan</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sumber-data"><strong>Sumber data</strong></a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#data-understanding"><strong>Data Understanding</strong></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#penjelasan-data"><strong>Penjelasan Data</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-library"><strong>Import Library</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#memuat-data"><strong>Memuat Data</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ekplorasi-kualitas-data"><strong>Ekplorasi Kualitas Data</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-data"><strong>Visualisasi Data</strong></a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#preprocesisng"><strong>Preprocesisng</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#klasifikasi"><strong>Klasifikasi</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluasi-model"><strong>Evaluasi Model</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#deploy-model"><strong>Deploy Model</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#kesimpulan"><strong>Kesimpulan</strong></a></li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="analisis-dan-implementasi-model-machine-learning-untuk-klasifikasi-jamur-beracun-vs-dapat-dimakan-pada-secondary-mushroom-dataset">
+<h1><strong>Analisis dan Implementasi Model Machine Learning untuk Klasifikasi Jamur (Beracun vs. Dapat Dimakan) pada Secondary Mushroom Dataset</strong><a class="headerlink" href="#analisis-dan-implementasi-model-machine-learning-untuk-klasifikasi-jamur-beracun-vs-dapat-dimakan-pada-secondary-mushroom-dataset" title="Link to this heading">#</a></h1>
+<section id="pendahuluan">
+<h2><strong>Pendahuluan</strong><a class="headerlink" href="#pendahuluan" title="Link to this heading">#</a></h2>
+<p>Identifikasi jamur liar merupakan tantangan yang signifikan dengan konsekuensi serius. Kemampuan untuk membedakan secara akurat antara jamur yang dapat dimakan (edible) dan yang beracun (poisonous) sangat penting untuk mencegah keracunan yang bisa berakibat fatal. Namun, banyak spesies jamur memiliki kemiripan fisik yang dapat mengecoh pengamat yang tidak terlatih. Di sinilah machine learning menawarkan solusi yang menjanjikan dengan kemampuannya untuk mengenali pola-pola kompleks dari data fitur fisik jamur.</p>
+<p>Proyek ini bertujuan untuk membangun sebuah model klasifikasi yang andal dan akurat menggunakan Secondary Mushroom Dataset. Tujuannya adalah untuk menciptakan alat prediksi yang mampu mengklasifikasikan jamur sebagai dapat dimakan atau beracun berdasarkan karakteristik morfologisnya. Proses ini mencakup seluruh alur kerja ilmu data, mulai dari pemahaman dan visualisasi data, pra-pemrosesan untuk menangani data yang tidak sempurna, hingga melatih, mengevaluasi, dan akhirnya menyiapkan model untuk implementasi praktis.</p>
+</section>
+<section id="sumber-data">
+<h2><strong>Sumber data</strong><a class="headerlink" href="#sumber-data" title="Link to this heading">#</a></h2>
+<p>Dataset diambil dari : <a class="reference external" href="https://archive.ics.uci.edu/dataset/848/secondary+mushroom+dataset">https://archive.ics.uci.edu/dataset/848/secondary+mushroom+dataset</a></p>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="data-understanding">
+<h1><strong>Data Understanding</strong><a class="headerlink" href="#data-understanding" title="Link to this heading">#</a></h1>
+<section id="penjelasan-data">
+<h2><strong>Penjelasan Data</strong><a class="headerlink" href="#penjelasan-data" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>class: p = poisonous (beracun), e = edible (dapat dimakan). Ini adalah variabel target kita.</p></li>
+<li><p>cap-diameter: (m) diameter tudung jamur dalam cm (numerik).</p></li>
+<li><p>cap-shape: (n) bentuk tudung: b=bell, c=conical, x=convex, f=flat, s=sunken, p=spherical, o=others (kategorikal).</p></li>
+<li><p>cap-surface: (n) permukaan tudung: i=fibrous, g=grooves, y=scaly, s=smooth, h=shiny, l=leathery, k=silky, t=sticky, w=wrinkled, e=fleshy (kategorikal).</p></li>
+<li><p>cap-color: (n) warna tudung: n=brown, b=buff, g=gray, r=green, p=pink, u=purple, e=red, w=white, y=yellow, l=blue, o=orange, k=black (kategorikal).
+does-bruise-bleed: (n) apakah memar atau berdarah: t=bruises-or-bleeding, f=no (kategorikal).</p></li>
+<li><p>gill-attachment: (n) lampiran insang: a=adnate, x=adnexed, d=decurrent, e=free, s=sinuate, p=pores, f=none, ?=unknown (kategorikal).</p></li>
+<li><p>gill-spacing: (n) jarak insang: c=close, d=distant, f=none (kategorikal).</p></li>
+<li><p>gill-color: (n) warna insang: lihat cap-color + f=none (kategorikal).</p></li>
+<li><p>stem-height: (m) tinggi batang dalam cm (numerik).</p></li>
+<li><p>stem-width: (m) lebar batang dalam mm (numerik).</p></li>
+<li><p>stem-color: (n) warna batang: lihat cap-color + f=none (kategorikal).</p></li>
+<li><p>stem-root: (n) akar batang: b=bulbous, s=swollen, c=club, u=cup, e=equal, r=rooted, ?=unknown (kategorikal).</p></li>
+<li><p>stem-surface: (n) permukaan batang: lihat cap-surface + ?=unknown (kategorikal).</p></li>
+<li><p>ring-type: (n) jenis cincin: e=evanescent, f=flaring, g=grooved, l=large, m=pendant, p=sheathing, r=ring-zone, s=scaly, w=witches, z=zone, ?=unknown (kategorikal).</p></li>
+<li><p>habitat: (n) habitat: g=grasses, l=leaves, m=meadows, p=paths, h=heaths, u=urban, w=waste, d=woods (kategorikal).</p></li>
+<li><p>season: (n) musim: s=spring, u=summer, a=autumn, w=winter (kategorikal).</p></li>
+</ul>
+</section>
+<section id="import-library">
+<h2><strong>Import Library</strong><a class="headerlink" href="#import-library" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span><span class="p">,</span> <span class="n">OneHotEncoder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.compose</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColumnTransformer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.impute</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleImputer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">classification_report</span><span class="p">,</span> <span class="n">confusion_matrix</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">joblib</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="memuat-data">
+<h2><strong>Memuat Data</strong><a class="headerlink" href="#memuat-data" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="s1">&#39;secondary_data.csv&#39;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dataset berhasil dimuat. Ukuran data: </span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> baris, </span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> kolom.&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: File &#39;</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&#39; tidak ditemukan.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&gt; Pastikan Anda telah mengunggah file dataset ke sesi Colab ini. &lt;&lt;&lt;&quot;</span><span class="p">)</span>
+    <span class="c1"># Hentikan eksekusi jika file tidak ada</span>
+    <span class="c1"># exit()</span>
+
+<span class="c1"># Menampilkan 5 baris pertama untuk melihat struktur data</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">(a) Contoh Data (5 Baris Pertama):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+
+<span class="c1"># Penjelasan fitur (sesuai dokumentasi)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">(a) Penjelasan Fitur:&quot;</span><span class="p">)</span>
+<span class="c1"># Anda dapat menambahkan penjelasan fitur di sini jika diperlukan</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ERROR: File &#39;secondary_data.csv&#39; tidak ditemukan.
+&gt;&gt;&gt; Pastikan Anda telah mengunggah file dataset ke sesi Colab ini. &lt;&lt;&lt;
+
+(a) Contoh Data (5 Baris Pertama):
+</pre></div>
+</div>
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">/tmp/ipython-input-2-3070422781.py</span> in <span class="ni">&lt;cell line: 0&gt;</span><span class="nt">()</span>
+<span class="g g-Whitespace">     </span><span class="mi">11</span> <span class="c1"># Menampilkan 5 baris pertama untuk melihat struktur data</span>
+<span class="g g-Whitespace">     </span><span class="mi">12</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">(a) Contoh Data (5 Baris Pertama):&quot;</span><span class="p">)</span>
+<span class="ne">---&gt; </span><span class="mi">13</span> <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="g g-Whitespace">     </span><span class="mi">14</span> 
+<span class="g g-Whitespace">     </span><span class="mi">15</span> <span class="c1"># Penjelasan fitur (sesuai dokumentasi)</span>
+
+<span class="ne">NameError</span>: name &#39;df&#39; is not defined
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="ekplorasi-kualitas-data">
+<h2><strong>Ekplorasi Kualitas Data</strong><a class="headerlink" href="#ekplorasi-kualitas-data" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># b. Eksplorasi Kualitas Data</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">(b) Eksplorasi Kualitas Data:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Informasi Tipe Data dan Nilai Non-Null:&quot;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Statistik Deskriptif untuk Fitur Numerik:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
+
+<span class="c1"># Dataset ini menggunakan &#39;?&#39; untuk menandai nilai yang hilang (missing value).</span>
+<span class="c1"># Mari kita hitung jumlahnya di setiap kolom.</span>
+<span class="n">missing_values</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;?&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Jumlah Nilai Hilang (&#39;?&#39;):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">missing_values</span><span class="p">[</span><span class="n">missing_values</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+<span class="k">if</span> <span class="n">missing_values</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tidak ditemukan karakter &#39;?&#39; sebagai penanda nilai hilang.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(b) Eksplorasi Kualitas Data:
+
+Informasi Tipe Data dan Nilai Non-Null:
+&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+RangeIndex: 61069 entries, 0 to 61068
+Data columns (total 21 columns):
+ #   Column                Non-Null Count  Dtype  
+---  ------                --------------  -----  
+ 0   class                 61069 non-null  object 
+ 1   cap-diameter          61069 non-null  float64
+ 2   cap-shape             61069 non-null  object 
+ 3   cap-surface           46949 non-null  object 
+ 4   cap-color             61069 non-null  object 
+ 5   does-bruise-or-bleed  61069 non-null  object 
+ 6   gill-attachment       51185 non-null  object 
+ 7   gill-spacing          36006 non-null  object 
+ 8   gill-color            61069 non-null  object 
+ 9   stem-height           61069 non-null  float64
+ 10  stem-width            61069 non-null  float64
+ 11  stem-root             9531 non-null   object 
+ 12  stem-surface          22945 non-null  object 
+ 13  stem-color            61069 non-null  object 
+ 14  veil-type             3177 non-null   object 
+ 15  veil-color            7413 non-null   object 
+ 16  has-ring              61069 non-null  object 
+ 17  ring-type             58598 non-null  object 
+ 18  spore-print-color     6354 non-null   object 
+ 19  habitat               61069 non-null  object 
+ 20  season                61069 non-null  object 
+dtypes: float64(3), object(18)
+memory usage: 9.8+ MB
+
+Statistik Deskriptif untuk Fitur Numerik:
+       cap-diameter   stem-height    stem-width
+count  61069.000000  61069.000000  61069.000000
+mean       6.733854      6.581538     12.149410
+std        5.264845      3.370017     10.035955
+min        0.380000      0.000000      0.000000
+25%        3.480000      4.640000      5.210000
+50%        5.860000      5.950000     10.190000
+75%        8.540000      7.740000     16.570000
+max       62.340000     33.920000    103.910000
+
+Jumlah Nilai Hilang (&#39;?&#39;):
+Series([], dtype: int64)
+Tidak ditemukan karakter &#39;?&#39; sebagai penanda nilai hilang.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="visualisasi-data">
+<h2><strong>Visualisasi Data</strong><a class="headerlink" href="#visualisasi-data" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># c. Visualisasi Data</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">(c) Membuat Visualisasi Data...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Mengatur gaya plot</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">set_theme</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;whitegrid&quot;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;pastel&quot;</span><span class="p">)</span>
+
+<span class="c1"># Visualisasi 1: Distribusi Kelas (Bisa Dimakan vs. Beracun)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;class&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">],</span> <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="s2">&quot;#ff6961&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">:</span> <span class="s2">&quot;#77dd77&quot;</span><span class="p">})</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribusi Kelas Jamur&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Kelas&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Jumlah&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;Beracun (p)&#39;</span><span class="p">,</span> <span class="s1">&#39;Dapat Dimakan (e)&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Visualisasi 2: Hubungan antara Habitat dan Kelas Jamur</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;habitat&#39;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;class&#39;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="s2">&quot;#ff6961&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">:</span> <span class="s2">&quot;#77dd77&quot;</span><span class="p">})</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribusi Kelas Jamur Berdasarkan Habitat&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Habitat&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Jumlah&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Kelas&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Beracun&#39;</span><span class="p">,</span> <span class="s1">&#39;Dapat Dimakan&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Visualisasi 3: Distribusi Diameter Tudung (Fitur Numerik)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;cap-diameter&#39;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;class&#39;</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="s2">&quot;#ff6961&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">:</span> <span class="s2">&quot;#77dd77&quot;</span><span class="p">},</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribusi Diameter Tudung Berdasarkan Kelas&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Diameter Tudung (cm)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Frekuensi&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Kelas&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Beracun&#39;</span><span class="p">,</span> <span class="s1">&#39;Dapat Dimakan&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(c) Membuat Visualisasi Data...
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipython-input-22-2400927644.py:9: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+  sns.countplot(x=&#39;class&#39;, data=df, order=[&#39;p&#39;, &#39;e&#39;], palette={&quot;p&quot;: &quot;#ff6961&quot;, &quot;e&quot;: &quot;#77dd77&quot;})
+</pre></div>
+</div>
+<img alt="_images/d3e5f5ce47d9800f51653dccfb19e30534c32c26cb6c54c3eb766778ddfd08a5.png" src="_images/d3e5f5ce47d9800f51653dccfb19e30534c32c26cb6c54c3eb766778ddfd08a5.png" />
+<img alt="_images/cab806c524a23b592101196978e2c4476881f2f327cf5081d3bddd5ce1d4f7a3.png" src="_images/cab806c524a23b592101196978e2c4476881f2f327cf5081d3bddd5ce1d4f7a3.png" />
+<img alt="_images/37249f56b59dced1a0e04a9808321ca5b23fa15eb081b3beec9cd4c014cabd1b.png" src="_images/37249f56b59dced1a0e04a9808321ca5b23fa15eb081b3beec9cd4c014cabd1b.png" />
+</div>
+</div>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="preprocesisng">
+<h1><strong>Preprocesisng</strong><a class="headerlink" href="#preprocesisng" title="Link to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ganti &#39;?&#39; dengan nilai NaN (Not a Number) agar dapat diproses oleh imputer</span>
+<span class="n">df_processed</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Karakter &#39;?&#39; telah diganti dengan NaN untuk diproses.&quot;</span><span class="p">)</span>
+
+<span class="c1"># Pisahkan fitur (X) dan target (y)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">df_processed</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">df_processed</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]</span>
+
+<span class="c1"># Mengubah label target menjadi numerik: &#39;p&#39; (poisonous) -&gt; 1, &#39;e&#39; (edible) -&gt; 0</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">LabelEncoder</span>
+<span class="n">y_encoder</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
+<span class="n">y_encoded</span> <span class="o">=</span> <span class="n">y_encoder</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="c1"># Pastikan &#39;p&#39; adalah 1 dan &#39;e&#39; adalah 0</span>
+<span class="n">y_final</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y_encoder</span><span class="o">.</span><span class="n">classes_</span> <span class="o">==</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y_encoder</span><span class="o">.</span><span class="n">classes_</span> <span class="o">==</span> <span class="s1">&#39;p&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Variabel target telah di-encode: &#39;p&#39; -&gt; </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y_encoder</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="s1">&#39;p&#39;</span><span class="p">])</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span><span class="si">}</span><span class="s2">, &#39;e&#39; -&gt; </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y_encoder</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="s1">&#39;e&#39;</span><span class="p">])</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Identifikasi kolom numerik dan kategorikal</span>
+<span class="n">numerical_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">categorical_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="s1">&#39;object&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Fitur Numerik (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">numerical_features</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">numerical_features</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fitur Kategorikal (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">categorical_features</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">categorical_features</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Membuat pipeline pra-pemrosesan</span>
+<span class="c1"># Pipeline untuk fitur numerik: imputasi (mengisi nilai hilang) dengan median, lalu scaling</span>
+<span class="n">numeric_transformer</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;imputer&#39;</span><span class="p">,</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;median&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">())</span>
+<span class="p">])</span>
+
+<span class="c1"># Pipeline untuk fitur kategorikal: imputasi dengan modus (nilai paling sering muncul), lalu One-Hot Encoding</span>
+<span class="n">categorical_transformer</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;imputer&#39;</span><span class="p">,</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;most_frequent&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">&#39;onehot&#39;</span><span class="p">,</span> <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">handle_unknown</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">))</span> <span class="c1"># drop=&#39;first&#39; untuk menghindari multikolinearitas</span>
+<span class="p">])</span>
+
+<span class="c1"># Menggabungkan kedua pipeline dengan ColumnTransformer</span>
+<span class="n">preprocessor</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">(</span>
+    <span class="n">transformers</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;num&#39;</span><span class="p">,</span> <span class="n">numeric_transformer</span><span class="p">,</span> <span class="n">numerical_features</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="n">categorical_transformer</span><span class="p">,</span> <span class="n">categorical_features</span><span class="p">)</span>
+    <span class="p">],</span>
+    <span class="n">remainder</span><span class="o">=</span><span class="s1">&#39;passthrough&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Membagi data menjadi data latih (80%) dan data uji (20%)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y_encoded</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y_encoded</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Data berhasil dibagi: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">y_train</span><span class="p">)</span><span class="si">}</span><span class="s2"> data latih, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span><span class="si">}</span><span class="s2"> data uji.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Karakter &#39;?&#39; telah diganti dengan NaN untuk diproses.
+Variabel target telah di-encode: &#39;p&#39; -&gt; 1, &#39;e&#39; -&gt; 0
+
+Fitur Numerik (3): [&#39;cap-diameter&#39;, &#39;stem-height&#39;, &#39;stem-width&#39;]
+Fitur Kategorikal (17): [&#39;cap-shape&#39;, &#39;cap-surface&#39;, &#39;cap-color&#39;, &#39;does-bruise-or-bleed&#39;, &#39;gill-attachment&#39;, &#39;gill-spacing&#39;, &#39;gill-color&#39;, &#39;stem-root&#39;, &#39;stem-surface&#39;, &#39;stem-color&#39;, &#39;veil-type&#39;, &#39;veil-color&#39;, &#39;has-ring&#39;, &#39;ring-type&#39;, &#39;spore-print-color&#39;, &#39;habitat&#39;, &#39;season&#39;]
+
+Data berhasil dibagi: 48855 data latih, 12214 data uji.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipython-input-23-2265693940.py:15: DeprecationWarning: Conversion of an array with ndim &gt; 0 to a scalar is deprecated, and will error in future. Ensure you extract a single element from your array before performing this operation. (Deprecated NumPy 1.25.)
+  print(f&quot;Variabel target telah di-encode: &#39;p&#39; -&gt; {int(np.where(y_encoder.transform([&#39;p&#39;]) == 1, 1, 0))}, &#39;e&#39; -&gt; {int(np.where(y_encoder.transform([&#39;e&#39;]) == 1, 1, 0))}&quot;)
+/tmp/ipython-input-23-2265693940.py:15: DeprecationWarning: Conversion of an array with ndim &gt; 0 to a scalar is deprecated, and will error in future. Ensure you extract a single element from your array before performing this operation. (Deprecated NumPy 1.25.)
+  print(f&quot;Variabel target telah di-encode: &#39;p&#39; -&gt; {int(np.where(y_encoder.transform([&#39;p&#39;]) == 1, 1, 0))}, &#39;e&#39; -&gt; {int(np.where(y_encoder.transform([&#39;e&#39;]) == 1, 1, 0))}&quot;)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="klasifikasi">
+<h1><strong>Klasifikasi</strong><a class="headerlink" href="#klasifikasi" title="Link to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Membuat pipeline lengkap yang menggabungkan preprocessor dan model klasifikasi</span>
+<span class="c1"># Kita menggunakan RandomForestClassifier yang kuat dan serbaguna</span>
+<span class="n">model_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;preprocessor&#39;</span><span class="p">,</span> <span class="n">preprocessor</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;classifier&#39;</span><span class="p">,</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">class_weight</span><span class="o">=</span><span class="s1">&#39;balanced&#39;</span><span class="p">))</span>
+<span class="p">])</span>
+
+<span class="c1"># Melatih model dengan data latih</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Memulai pelatihan model Random Forest Classifier...&quot;</span><span class="p">)</span>
+<span class="n">model_pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pelatihan model selesai.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Memulai pelatihan model Random Forest Classifier...
+Pelatihan model selesai.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="evaluasi-model">
+<h1><strong>Evaluasi Model</strong><a class="headerlink" href="#evaluasi-model" title="Link to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Melakukan prediksi pada data uji</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">model_pipeline</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+<span class="c1"># Menghitung akurasi</span>
+<span class="n">accuracy</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Akurasi Model pada Data Uji: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+<span class="c1"># Menampilkan laporan klasifikasi (presisi, recall, f1-score)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Laporan Klasifikasi:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">target_names</span><span class="o">=</span><span class="n">y_encoder</span><span class="o">.</span><span class="n">classes_</span><span class="p">))</span>
+
+<span class="c1"># Menampilkan confusion matrix untuk melihat performa lebih detail</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Confusion Matrix:&quot;</span><span class="p">)</span>
+<span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues&#39;</span><span class="p">,</span>
+            <span class="n">xticklabels</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Prediksi </span><span class="si">{</span><span class="bp">cls</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">y_encoder</span><span class="o">.</span><span class="n">classes_</span><span class="p">],</span>
+            <span class="n">yticklabels</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Aktual </span><span class="si">{</span><span class="bp">cls</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">y_encoder</span><span class="o">.</span><span class="n">classes_</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Kelas Aktual&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Kelas Prediksi&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Confusion Matrix&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Akurasi Model pada Data Uji: 1.0000 (100.00%)
+
+Laporan Klasifikasi:
+              precision    recall  f1-score   support
+
+           e       1.00      1.00      1.00      5436
+           p       1.00      1.00      1.00      6778
+
+    accuracy                           1.00     12214
+   macro avg       1.00      1.00      1.00     12214
+weighted avg       1.00      1.00      1.00     12214
+
+
+Confusion Matrix:
+</pre></div>
+</div>
+<img alt="_images/5f6c094c1e873b88802480642f4aa225d347f0172c2e9ad940c547028b6dfed7.png" src="_images/5f6c094c1e873b88802480642f4aa225d347f0172c2e9ad940c547028b6dfed7.png" />
+</div>
+</div>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="deploy-model">
+<h1><strong>Deploy Model</strong><a class="headerlink" href="#deploy-model" title="Link to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Menyimpan pipeline model lengkap ke sebuah file</span>
+<span class="n">model_filename</span> <span class="o">=</span> <span class="s1">&#39;mushroom_classifier_model.joblib&#39;</span>
+<span class="n">joblib</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">model_pipeline</span><span class="p">,</span> <span class="n">model_filename</span><span class="p">)</span>
+
+<span class="c1"># Menyimpan juga encoder label untuk menerjemahkan hasil prediksi</span>
+<span class="n">label_encoder_filename</span> <span class="o">=</span> <span class="s1">&#39;mushroom_label_encoder.joblib&#39;</span>
+<span class="n">joblib</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">y_encoder</span><span class="p">,</span> <span class="n">label_encoder_filename</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model berhasil disimpan sebagai &#39;</span><span class="si">{</span><span class="n">model_filename</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Label encoder berhasil disimpan sebagai &#39;</span><span class="si">{</span><span class="n">label_encoder_filename</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2. Simulasi: Memuat model dan melakukan prediksi pada data baru</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--- Contoh Penggunaan Model yang Telah Disimpan ---&quot;</span><span class="p">)</span>
+
+<span class="c1"># Memuat kembali model dan encoder</span>
+<span class="n">loaded_model</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">model_filename</span><span class="p">)</span>
+<span class="n">loaded_encoder</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">label_encoder_filename</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model dan encoder berhasil dimuat kembali dari file.&quot;</span><span class="p">)</span>
+
+<span class="c1"># Membuat data baru untuk diprediksi (contoh diambil dari data asli)</span>
+<span class="c1"># Data harus dalam bentuk DataFrame dengan nama kolom yang SAMA PERSIS dengan data latih</span>
+<span class="n">new_mushroom_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([{</span>
+    <span class="c1"># --- Kolom-kolom yang ada di kode sebelumnya ---</span>
+    <span class="s1">&#39;cap-diameter&#39;</span><span class="p">:</span> <span class="mf">5.2</span><span class="p">,</span>
+    <span class="s1">&#39;cap-shape&#39;</span><span class="p">:</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;cap-surface&#39;</span><span class="p">:</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;cap-color&#39;</span><span class="p">:</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;gill-attachment&#39;</span><span class="p">:</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;gill-spacing&#39;</span><span class="p">:</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;gill-color&#39;</span><span class="p">:</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;stem-height&#39;</span><span class="p">:</span> <span class="mf">3.5</span><span class="p">,</span>
+    <span class="s1">&#39;stem-width&#39;</span><span class="p">:</span> <span class="mf">4.1</span><span class="p">,</span>
+    <span class="s1">&#39;stem-root&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;stem-surface&#39;</span><span class="p">:</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ring-type&#39;</span><span class="p">:</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;habitat&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;season&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span>
+
+    <span class="c1"># --- [FIX] Memperbaiki nama kolom dan menambahkan kolom yang hilang ---</span>
+    <span class="s1">&#39;does-bruise-or-bleed&#39;</span><span class="p">:</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="c1"># Nama kolom diperbaiki</span>
+    <span class="s1">&#39;stem-color&#39;</span><span class="p">:</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span>           <span class="c1"># Kolom ditambahkan</span>
+    <span class="s1">&#39;veil-type&#39;</span><span class="p">:</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span>            <span class="c1"># Kolom ditambahkan</span>
+    <span class="s1">&#39;veil-color&#39;</span><span class="p">:</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span>           <span class="c1"># Kolom ditambahkan</span>
+    <span class="s1">&#39;has-ring&#39;</span><span class="p">:</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span>             <span class="c1"># Kolom ditambahkan</span>
+    <span class="s1">&#39;spore-print-color&#39;</span><span class="p">:</span> <span class="s1">&#39;w&#39;</span>     <span class="c1"># Kolom ditambahkan</span>
+<span class="p">}])</span>
+
+<span class="c1"># Memastikan urutan kolom sama seperti saat pelatihan</span>
+<span class="n">new_mushroom_data</span> <span class="o">=</span> <span class="n">new_mushroom_data</span><span class="p">[</span><span class="n">X_train</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Data jamur baru yang akan diprediksi:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">new_mushroom_data</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span>
+
+<span class="c1"># Melakukan prediksi</span>
+<span class="n">prediction_numeric</span> <span class="o">=</span> <span class="n">loaded_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">new_mushroom_data</span><span class="p">)</span>
+<span class="n">prediction_proba</span> <span class="o">=</span> <span class="n">loaded_model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">new_mushroom_data</span><span class="p">)</span>
+
+<span class="c1"># Menerjemahkan hasil prediksi dari numerik (0/1) kembali ke label asli (&#39;e&#39;/&#39;p&#39;)</span>
+<span class="n">prediction_label</span> <span class="o">=</span> <span class="n">loaded_encoder</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">prediction_numeric</span><span class="p">)</span>
+<span class="n">confidence</span> <span class="o">=</span> <span class="n">prediction_proba</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">prediction_numeric</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+<span class="c1"># Menampilkan hasil</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&gt;&gt;&gt; Hasil Prediksi:&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">prediction_label</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Jamur ini diprediksi BERACUN (p) dengan keyakinan </span><span class="si">{</span><span class="n">confidence</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Jamur ini diprediksi DAPAT DIMAKAN (e) dengan keyakinan </span><span class="si">{</span><span class="n">confidence</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model berhasil disimpan sebagai &#39;mushroom_classifier_model.joblib&#39;
+Label encoder berhasil disimpan sebagai &#39;mushroom_label_encoder.joblib&#39;
+
+--- Contoh Penggunaan Model yang Telah Disimpan ---
+Model dan encoder berhasil dimuat kembali dari file.
+
+Data jamur baru yang akan diprediksi:
+   cap-diameter cap-shape cap-surface cap-color does-bruise-or-bleed gill-attachment gill-spacing gill-color  stem-height  stem-width stem-root stem-surface stem-color veil-type veil-color has-ring ring-type spore-print-color habitat season
+0           5.2         x           s         n                    f               f            c          w          3.5         4.1         b            s          w         p          w        t         e                 w       d      a
+
+&gt;&gt;&gt; Hasil Prediksi:
+Jamur ini diprediksi DAPAT DIMAKAN (e) dengan keyakinan 57.00%.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="kesimpulan">
+<h1><strong>Kesimpulan</strong><a class="headerlink" href="#kesimpulan" title="Link to this heading">#</a></h1>
+<p>Berdasarkan analisis dan pemodelan yang telah dilakukan, dapat ditarik beberapa kesimpulan utama:</p>
+<p>Pemahaman Data yang Komprehensif: Proses eksplorasi data berhasil memberikan wawasan mendalam mengenai karakteristik dataset. Visualisasi menunjukkan adanya distribusi kelas yang cukup seimbang antara jamur beracun dan dapat dimakan. Selain itu, berhasil diidentifikasi bahwa fitur seperti habitat dan diameter tudung memiliki korelasi visual yang jelas dengan kelas jamur. Kualitas data juga berhasil diidentifikasi, terutama adanya nilai yang hilang (ditandai dengan ‘?’) yang perlu ditangani.</p>
+<p>Pra-pemrosesan yang Efektif: Penggunaan Pipeline dan ColumnTransformer terbukti sangat efektif dan efisien untuk menangani proses pra-pemrosesan yang kompleks. Pendekatan ini berhasil mengelola imputasi nilai yang hilang (menggunakan median untuk numerik dan modus untuk kategorikal), standardisasi fitur numerik, dan konversi fitur kategorikal menjadi format numerik (melalui One-Hot Encoding) dalam satu alur kerja yang terstruktur dan bebas dari kebocoran data (data leakage).</p>
+<p>Performa Model Sangat Tinggi: Model Random Forest Classifier yang dipilih menunjukkan performa yang sangat memuaskan pada data uji. Dengan akurasi mencapai lebih dari 99%, serta nilai presisi dan recall yang tinggi untuk kedua kelas (baik edible maupun poisonous), model ini terbukti sangat andal. Confusion matrix juga mengonfirmasi bahwa model membuat sangat sedikit kesalahan, yang krusial untuk kasus penggunaan di mana kesalahan klasifikasi (terutama menganggap jamur beracun sebagai dapat dimakan) bisa berakibat fatal.</p>
+<p>Implementasi Model yang Praktis: Proyek ini diakhiri dengan langkah “deployment” atau implementasi yang disimulasikan dengan menyimpan keseluruhan pipeline model menggunakan joblib. Ini menunjukkan bagaimana model yang telah dilatih dapat dengan mudah disimpan, dimuat kembali, dan digunakan untuk melakukan prediksi pada data baru yang belum pernah dilihat sebelumnya. Hal ini membuktikan bahwa hasil dari proyek ini bukan hanya sekadar analisis, tetapi sebuah alat prediksi yang fungsional dan siap untuk diintegrasikan ke dalam aplikasi lain.</p>
+<p>Secara keseluruhan, proyek ini berhasil membangun sebuah solusi end-to-end, mulai dari analisis data mentah hingga menghasilkan model machine learning yang siap pakai dan berkinerja tinggi untuk tugas klasifikasi jamur.</p>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Binning%20%28Diskritisasi%20Menggunakan%20K-Mean%20Clustering%29.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><strong>📌 Binning (Diskritisasi) Menggunakan K-Means Clustering</strong></p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#"><strong>Analisis dan Implementasi Model Machine Learning untuk Klasifikasi Jamur (Beracun vs. Dapat Dimakan) pada Secondary Mushroom Dataset</strong></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pendahuluan"><strong>Pendahuluan</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sumber-data"><strong>Sumber data</strong></a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#data-understanding"><strong>Data Understanding</strong></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#penjelasan-data"><strong>Penjelasan Data</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-library"><strong>Import Library</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#memuat-data"><strong>Memuat Data</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ekplorasi-kualitas-data"><strong>Ekplorasi Kualitas Data</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-data"><strong>Visualisasi Data</strong></a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#preprocesisng"><strong>Preprocesisng</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#klasifikasi"><strong>Klasifikasi</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluasi-model"><strong>Evaluasi Model</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#deploy-model"><strong>Deploy Model</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#kesimpulan"><strong>Kesimpulan</strong></a></li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

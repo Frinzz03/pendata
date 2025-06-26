@@ -1,0 +1,65 @@
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/dist-packages/jupyter_core/utils/__init__.py", line 154, in wrapped
+    asyncio.get_running_loop()
+RuntimeError: no running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/dist-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/usr/local/lib/python3.11/dist-packages/nbclient/client.py", line 1319, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/jupyter_core/utils/__init__.py", line 158, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/usr/local/lib/python3.11/dist-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/usr/local/lib/python3.11/dist-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+try:
+    file_path = 'secondary_data.csv'
+    df = pd.read_csv(file_path, sep=';')
+    print(f"Dataset berhasil dimuat. Ukuran data: {df.shape[0]} baris, {df.shape[1]} kolom.")
+except FileNotFoundError:
+    print(f"ERROR: File '{file_path}' tidak ditemukan.")
+    print(">>> Pastikan Anda telah mengunggah file dataset ke sesi Colab ini. <<<")
+    # Hentikan eksekusi jika file tidak ada
+    # exit()
+
+# Menampilkan 5 baris pertama untuk melihat struktur data
+print("\n(a) Contoh Data (5 Baris Pertama):")
+print(df.head())
+
+# Penjelasan fitur (sesuai dokumentasi)
+print("\n(a) Penjelasan Fitur:")
+# Anda dapat menambahkan penjelasan fitur di sini jika diperlukan
+
+------------------
+
+----- stdout -----
+ERROR: File 'secondary_data.csv' tidak ditemukan.
+>>> Pastikan Anda telah mengunggah file dataset ke sesi Colab ini. <<<
+
+(a) Contoh Data (5 Baris Pertama):
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mNameError[0m                                 Traceback (most recent call last)
+[0;32m/tmp/ipython-input-2-3070422781.py[0m in [0;36m<cell line: 0>[0;34m()[0m
+[1;32m     11[0m [0;31m# Menampilkan 5 baris pertama untuk melihat struktur data[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     12[0m [0mprint[0m[0;34m([0m[0;34m"\n(a) Contoh Data (5 Baris Pertama):"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0;32m---> 13[0;31m [0mprint[0m[0;34m([0m[0mdf[0m[0;34m.[0m[0mhead[0m[0;34m([0m[0;34m)[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     14[0m [0;34m[0m[0m
+[1;32m     15[0m [0;31m# Penjelasan fitur (sesuai dokumentasi)[0m[0;34m[0m[0;34m[0m[0m
+
+[0;31mNameError[0m: name 'df' is not defined
+

@@ -1,0 +1,1134 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Local Outlier Factor &#8212; My sample book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Local Outlier Factor (LOF)';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Naive Bayes" href="Naive%20Bayes.html" />
+    <link rel="prev" title="Mendeteksi Outlier Menggunakan K-Nearest Neighbors (KNN)" href="Mencari%20Outlayer.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="My sample book - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="My sample book - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Welcome to my website
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Penambangan%20Data%20_Data%20Understanding.html"><strong>Data Understanding</strong></a></li>
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="Mencari%20Outlayer.html"><strong>Mendeteksi Outlier Menggunakan K-Nearest Neighbors (KNN)</strong></a></li>
+
+
+
+
+
+
+<li class="toctree-l1 current active"><a class="current reference internal" href="#"><strong>Local Outlier Factor</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Naive%20Bayes.html"><strong>Naive Bayes</strong></a></li>
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="23-112_Fariel%20Nur%20Rizky%20Maulana_UTS_Pendat.html"><strong>Upload File csv</strong></a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="K-Mean.html"><strong>K-Mean</strong></a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="Decision%20Tree.html"><strong>🌳 Apa Itu Decision Tree?</strong></a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="Binning%20%28Diskritisasi%20Menggunakan%20K-Mean%20Clustering%29.html"><strong>📌 Binning (Diskritisasi) Menggunakan K-Means Clustering</strong></a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="Pra_Uas.html"><strong>Analisis dan Implementasi Model Machine Learning untuk Klasifikasi Jamur (Beracun vs. Dapat Dimakan) pada Secondary Mushroom Dataset</strong></a></li>
+
+
+
+
+
+
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FLocal Outlier Factor (LOF).html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/Local Outlier Factor (LOF).ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Local Outlier Factor</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bagaimana-lof-bekerja"><strong>Bagaimana LOF Bekerja?</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tahapan-penerapan-penggunaan-lof-local-outlier-factor"><strong>Tahapan Penerapan Penggunaan LOF (Local Outlier Factor)</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#menghitung-lof-menggunakan-library-sklearn"><strong>Menghitung LOF menggunakan Library sklearn</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-outlier"><strong>Visualisasi Outlier</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kelebihan-lof"><strong>Kelebihan LOF</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kekurangan-lof"><strong>Kekurangan LOF</strong></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="local-outlier-factor">
+<h1><strong>Local Outlier Factor</strong><a class="headerlink" href="#local-outlier-factor" title="Link to this heading">#</a></h1>
+<p>Local Outlier Factor (LOF) adalah algoritma untuk mendeteksi outlier atau anomali dalam suatu dataset berdasarkan kepadatan lokal (local density). LOF mengukur sejauh mana suatu data berbeda dari tetangganya, dengan membandingkan kerapatan lokalnya dengan kerapatan lokal dari titik-titik di sekitarnya.</p>
+<section id="bagaimana-lof-bekerja">
+<h2><strong>Bagaimana LOF Bekerja?</strong><a class="headerlink" href="#bagaimana-lof-bekerja" title="Link to this heading">#</a></h2>
+<ol class="arabic">
+<li><p>Menentukan Tetangga (k-nearest neighbors / k-NN):
+Untuk setiap titik data, algoritma menghitung jarak ke sejumlah tetangga terdekatnya (k tetangga terdekat).</p></li>
+<li><p>Menghitung Kepadatan Lokal:
+LOF menggunakan konsep reachability distance, yaitu jarak maksimum antara suatu titik dan tetangga-tetangganya:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>     reachability distance(𝑝,𝑜)=max(k-distance(𝑜),distance(𝑝,𝑜))
+</pre></div>
+</div>
+</li>
+</ol>
+<p>di mana:</p>
+<ul class="simple">
+<li><p>𝑝 adalah titik yang sedang dievaluasi,</p></li>
+<li><p>𝑜 adalah tetangganya,</p></li>
+<li><p>k-distance(𝑜) adalah jarak ke tetangga ke-𝑘 dari 𝑜,</p></li>
+<li><p>distance(𝑝,𝑜) adalah jarak Euclidean antara 𝑝 dan 𝑜.</p></li>
+</ul>
+<ol class="arabic simple" start="3">
+<li><p>Menghitung Kepadatan Lokal Relatif (Local Reachability Density - LRD):
+LRD suatu titik dihitung sebagai kebalikan dari rata-rata reachability distance terhadap tetangga-tetangganya.</p></li>
+<li><p>Menghitung LOF Score:
+LOF score dihitung dengan membandingkan kepadatan lokal suatu titik dengan kepadatan lokal dari tetangga-tetangganya:</p></li>
+</ol>
+<p><span class="math notranslate nohighlight">\(
+  \text{LOF}(p) = \frac{1}{k} \sum_{o \in N_k(p)} \frac{\text{LRD}(o)}{\text{LRD}(p)}
+  \)</span></p>
+<ul class="simple">
+<li><p>Jika LOF(𝑝) ≈ 1, berarti titik 𝑝 mirip dengan tetangganya (bukan outlier).</p></li>
+<li><p>Jika LOF(𝑝)&gt;1, berarti titik 𝑝 memiliki kepadatan lebih rendah dibandingkan tetangganya dan bisa dianggap sebagai outlier.</p></li>
+<li><p>Jika LOF(𝑝)≪1, titik tersebut lebih padat dibandingkan sekitarnya (kemungkinan besar bukan outlier).</p></li>
+</ul>
+</section>
+<section id="tahapan-penerapan-penggunaan-lof-local-outlier-factor">
+<h2><strong>Tahapan Penerapan Penggunaan LOF (Local Outlier Factor)</strong><a class="headerlink" href="#tahapan-penerapan-penggunaan-lof-local-outlier-factor" title="Link to this heading">#</a></h2>
+<p>Untuk menerapkan Local Outlier Factor (LOF) dalam deteksi anomali atau outlier, berikut adalah langkah-langkahnya:</p>
+<ol class="arabic simple">
+<li><p>Menyiapkan Data</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># Dataset baru dengan koordinat acak (termasuk beberapa outlier)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">22</span><span class="p">],</span> <span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>  <span class="c1"># Outlier di sini</span>
+<span class="p">])</span>
+
+<span class="c1"># Membuat DataFrame untuk menampilkan data</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">])</span>
+
+<span class="c1"># Menampilkan DataFrame</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    X   Y
+0   3   7
+1   8   2
+2   4   5
+3   7   8
+4   5   3
+5  20  22
+6  25  30
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Menentukan k-neighbor</p></li>
+</ol>
+<p>menggunakan rumus Euclidean Distance:</p>
+<p><span class="math notranslate nohighlight">\(
+  d(A, B) = \sqrt{(x_B - x_A)^2 + (y_B - y_A)^2}
+  \)</span></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tabulate</span><span class="w"> </span><span class="kn">import</span> <span class="n">tabulate</span>
+
+<span class="c1"># Data awal (dengan beberapa outlier)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">22</span><span class="p">],</span> <span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>  <span class="c1"># Outlier di sini</span>
+<span class="p">])</span>
+
+<span class="c1"># Membuat DataFrame untuk menampilkan data awal</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">])</span>
+
+<span class="c1"># Fungsi untuk menghitung jarak Euclidean</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">euclidean_distance</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">p1</span> <span class="o">-</span> <span class="n">p2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+
+<span class="c1"># Menentukan jumlah tetangga terdekat (k)</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1"># Menyimpan indeks dan jarak tetangga terdekat</span>
+<span class="n">neighbors_indices</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">neighbors_distances</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">k_distance</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Mencari k tetangga terdekat untuk setiap titik</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">other_point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">j</span><span class="p">:</span>
+            <span class="n">distances</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">j</span><span class="p">,</span> <span class="n">euclidean_distance</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">other_point</span><span class="p">)))</span>  <span class="c1"># (index, distance)</span>
+
+    <span class="c1"># Urutkan berdasarkan jarak dan ambil k tetangga terdekat</span>
+    <span class="n">distances</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">nearest_neighbors</span> <span class="o">=</span> <span class="n">distances</span><span class="p">[:</span><span class="n">k</span><span class="p">]</span>
+
+    <span class="c1"># Simpan indeks dan jarak tetangga ke-1, ke-2, ke-3</span>
+    <span class="n">neighbors_indices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">nearest_neighbors</span><span class="p">])</span>
+    <span class="n">neighbors_distances</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">dist</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">dist</span> <span class="ow">in</span> <span class="n">nearest_neighbors</span><span class="p">])</span>
+
+    <span class="c1"># Simpan k-distance (jarak ke tetangga ke-k)</span>
+    <span class="n">k_distance</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nearest_neighbors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="c1"># Menambahkan hasil ke DataFrame</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+    <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;k-neighbors_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">neighbors_indices</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))]</span>
+    <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;k-distance_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">neighbors_distances</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))]</span>
+
+<span class="c1"># Menampilkan tabel dalam format rapi</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Data k-neighbors ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tabulate</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="s1">&#39;keys&#39;</span><span class="p">,</span> <span class="n">tablefmt</span><span class="o">=</span><span class="s1">&#39;grid&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== Data k-neighbors ===
++----+-----+-----+-----------------+----------------+-----------------+----------------+-----------------+----------------+
+|    |   X |   Y |   k-neighbors_1 |   k-distance_1 |   k-neighbors_2 |   k-distance_2 |   k-neighbors_3 |   k-distance_3 |
++====+=====+=====+=================+================+=================+================+=================+================+
+|  0 |   3 |   7 |               2 |        2.23607 |               3 |        4.12311 |               4 |        4.47214 |
++----+-----+-----+-----------------+----------------+-----------------+----------------+-----------------+----------------+
+|  1 |   8 |   2 |               4 |        3.16228 |               2 |        5       |               3 |        6.08276 |
++----+-----+-----+-----------------+----------------+-----------------+----------------+-----------------+----------------+
+|  2 |   4 |   5 |               0 |        2.23607 |               4 |        2.23607 |               3 |        4.24264 |
++----+-----+-----+-----------------+----------------+-----------------+----------------+-----------------+----------------+
+|  3 |   7 |   8 |               0 |        4.12311 |               2 |        4.24264 |               4 |        5.38516 |
++----+-----+-----+-----------------+----------------+-----------------+----------------+-----------------+----------------+
+|  4 |   5 |   3 |               2 |        2.23607 |               1 |        3.16228 |               0 |        4.47214 |
++----+-----+-----+-----------------+----------------+-----------------+----------------+-----------------+----------------+
+|  5 |  20 |  22 |               6 |        9.43398 |               3 |       19.105   |               0 |       22.6716  |
++----+-----+-----+-----------------+----------------+-----------------+----------------+-----------------+----------------+
+|  6 |  25 |  30 |               5 |        9.43398 |               3 |       28.4253  |               0 |       31.8277  |
++----+-----+-----+-----------------+----------------+-----------------+----------------+-----------------+----------------+
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>menentukan k-distance</p></li>
+</ol>
+<ul class="simple">
+<li><p>jarak antara titik dengan tetangga ke-K terdekat</p></li>
+<li><p>contoh: K=3 -&gt; jarak ke tetangga ketiga terdekat</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tabulate</span><span class="w"> </span><span class="kn">import</span> <span class="n">tabulate</span>
+
+<span class="c1"># Data awal (dengan beberapa outlier)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">22</span><span class="p">],</span> <span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>  <span class="c1"># Outlier di sini</span>
+<span class="p">])</span>
+
+<span class="c1"># Membuat DataFrame untuk menampilkan data awal</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">])</span>
+
+<span class="c1"># Fungsi untuk menghitung jarak Euclidean</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">euclidean_distance</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">p1</span> <span class="o">-</span> <span class="n">p2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+
+<span class="c1"># Menentukan jumlah tetangga terdekat (k)</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1"># Menyimpan indeks dan jarak tetangga terdekat</span>
+<span class="n">neighbors_indices</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">neighbors_distances</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">k_distance</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Mencari k tetangga terdekat untuk setiap titik</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">other_point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">j</span><span class="p">:</span>
+            <span class="n">distances</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">j</span><span class="p">,</span> <span class="n">euclidean_distance</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">other_point</span><span class="p">)))</span>  <span class="c1"># (index, distance)</span>
+
+    <span class="c1"># Urutkan berdasarkan jarak dan ambil k tetangga terdekat</span>
+    <span class="n">distances</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">nearest_neighbors</span> <span class="o">=</span> <span class="n">distances</span><span class="p">[:</span><span class="n">k</span><span class="p">]</span>
+
+    <span class="c1"># Simpan indeks dan jarak tetangga ke-1, ke-2, ke-3</span>
+    <span class="n">neighbors_indices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">nearest_neighbors</span><span class="p">])</span>
+    <span class="n">neighbors_distances</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">dist</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">dist</span> <span class="ow">in</span> <span class="n">nearest_neighbors</span><span class="p">])</span>
+
+    <span class="c1"># Simpan k-distance (jarak ke tetangga ke-k)</span>
+    <span class="n">k_distance</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nearest_neighbors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="c1"># Tambahkan k-distance ke DataFrame</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;k-distance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">k_distance</span>
+
+<span class="c1"># Menampilkan tabel dalam format rapi</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Data k-distance ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tabulate</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="s1">&#39;keys&#39;</span><span class="p">,</span> <span class="n">tablefmt</span><span class="o">=</span><span class="s1">&#39;grid&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== Data k-distance ===
++----+-----+-----+--------------+
+|    |   X |   Y |   k-distance |
++====+=====+=====+==============+
+|  0 |   3 |   7 |      4.47214 |
++----+-----+-----+--------------+
+|  1 |   8 |   2 |      6.08276 |
++----+-----+-----+--------------+
+|  2 |   4 |   5 |      4.24264 |
++----+-----+-----+--------------+
+|  3 |   7 |   8 |      5.38516 |
++----+-----+-----+--------------+
+|  4 |   5 |   3 |      4.47214 |
++----+-----+-----+--------------+
+|  5 |  20 |  22 |     22.6716  |
++----+-----+-----+--------------+
+|  6 |  25 |  30 |     31.8277  |
++----+-----+-----+--------------+
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Menghitung Reachability Distance (RD)
+Reachability Distance (RD) didefinisikan sebagai:</p></li>
+</ol>
+<p><span class="math notranslate nohighlight">\(
+  RD_k(A, B) = \max(distance_k(B), distance(A, B))
+  \)</span></p>
+<p>Artinya, untuk setiap tetangga B dari titik A, nilai RD adalah nilai maksimum antara k-distance(B) dan jarak Euclidean distance(A, B).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Menghitung Reachability Distance (RD) dengan format 1 baris per index</span>
+<span class="n">rd_data</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">neighbor_list</span> <span class="o">=</span> <span class="n">neighbors_indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># Tetangga dari titik ini</span>
+    <span class="n">distance_list</span> <span class="o">=</span> <span class="n">neighbors_distances</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># Jarak ke tetangga</span>
+    <span class="n">rd_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">k_distance</span><span class="p">[</span><span class="n">neighbor</span><span class="p">],</span> <span class="n">distance_list</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">neighbor_list</span><span class="p">)]</span>  <span class="c1"># RD</span>
+
+    <span class="c1"># Menyimpan dalam satu baris per index</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># Index titik</span>
+    <span class="n">row</span> <span class="o">+=</span> <span class="p">[</span><span class="n">neighbor_list</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span>  <span class="c1"># Tetangga</span>
+    <span class="n">row</span> <span class="o">+=</span> <span class="p">[</span><span class="n">distance_list</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span>  <span class="c1"># Jarak</span>
+    <span class="n">row</span> <span class="o">+=</span> <span class="p">[</span><span class="n">rd_list</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span>  <span class="c1"># Reachability Distance</span>
+    <span class="n">rd_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+<span class="c1"># Membuat kolom untuk DataFrame</span>
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Index&quot;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+    <span class="n">columns</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Tetangga_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Jarak_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;RD_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+
+<span class="c1"># Membuat DataFrame untuk RD dengan format 1 baris per index</span>
+<span class="n">df_rd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rd_data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+
+<span class="c1"># Menampilkan tabel Reachability Distance dalam format 1 baris per index</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Reachability Distance (RD) dalam 1 Baris per Index ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tabulate</span><span class="p">(</span><span class="n">df_rd</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="s1">&#39;keys&#39;</span><span class="p">,</span> <span class="n">tablefmt</span><span class="o">=</span><span class="s1">&#39;grid&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== Reachability Distance (RD) dalam 1 Baris per Index ===
++----+---------+--------------+-----------+--------+--------------+-----------+----------+--------------+-----------+----------+
+|    |   Index |   Tetangga_1 |   Jarak_1 |   RD_1 |   Tetangga_2 |   Jarak_2 |     RD_2 |   Tetangga_3 |   Jarak_3 |     RD_3 |
++====+=========+==============+===========+========+==============+===========+==========+==============+===========+==========+
+|  0 |       0 |            2 |         3 |      4 |      2.23607 |   4.12311 |  4.47214 |      4.24264 |   5.38516 |  4.47214 |
++----+---------+--------------+-----------+--------+--------------+-----------+----------+--------------+-----------+----------+
+|  1 |       1 |            4 |         2 |      3 |      3.16228 |   5       |  6.08276 |      4.47214 |   5       |  6.08276 |
++----+---------+--------------+-----------+--------+--------------+-----------+----------+--------------+-----------+----------+
+|  2 |       2 |            0 |         4 |      3 |      2.23607 |   2.23607 |  4.24264 |      4.47214 |   4.47214 |  5.38516 |
++----+---------+--------------+-----------+--------+--------------+-----------+----------+--------------+-----------+----------+
+|  3 |       3 |            0 |         2 |      4 |      4.12311 |   4.24264 |  5.38516 |      4.47214 |   4.24264 |  5.38516 |
++----+---------+--------------+-----------+--------+--------------+-----------+----------+--------------+-----------+----------+
+|  4 |       4 |            2 |         1 |      0 |      2.23607 |   3.16228 |  4.47214 |      4.24264 |   6.08276 |  4.47214 |
++----+---------+--------------+-----------+--------+--------------+-----------+----------+--------------+-----------+----------+
+|  5 |       5 |            6 |         3 |      0 |      9.43398 |  19.105   | 22.6716  |     31.8277  |  19.105   | 22.6716  |
++----+---------+--------------+-----------+--------+--------------+-----------+----------+--------------+-----------+----------+
+|  6 |       6 |            5 |         3 |      0 |      9.43398 |  28.4253  | 31.8277  |     22.6716  |  28.4253  | 31.8277  |
++----+---------+--------------+-----------+--------+--------------+-----------+----------+--------------+-----------+----------+
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>Menghitung Local Reachability Density (LRD)
+Local Reachability Density (LRD) dihitung dengan:</p></li>
+</ol>
+<p><span class="math notranslate nohighlight">\(
+  LRD(A) = \frac{k}{\sum_{B \in kNN(A)} RD(A, B)}
+  \)</span></p>
+<p>LRD menunjukkan seberapa rapat atau jarang titik tersebut dibandingkan dengan tetangganya.</p>
+<p>Intrepretasi:</p>
+<ul class="simple">
+<li><p>LRD rendah -&gt; Wilayah jarang (calon outlier)</p></li>
+<li><p>LRD Tinggi -&gt; wilayah padat</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Menghitung Local Reachability Density (LRD)</span>
+<span class="n">lrd_data</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">rd_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">k_distance</span><span class="p">[</span><span class="n">neighbor</span><span class="p">],</span> <span class="n">neighbors_distances</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">neighbors_indices</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span>  <span class="c1"># RD_k(p, o)</span>
+    <span class="n">lrd</span> <span class="o">=</span> <span class="n">k</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">rd_list</span><span class="p">)</span>  <span class="c1"># LRD(p)</span>
+
+    <span class="c1"># Menyimpan (Index, X, Y, LRD)</span>
+    <span class="n">lrd_data</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">lrd</span><span class="p">])</span>
+
+<span class="c1"># Membuat DataFrame untuk LRD</span>
+<span class="n">df_lrd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">lrd_data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Index&quot;</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;LRD&quot;</span><span class="p">])</span>
+
+<span class="c1"># Menampilkan tabel LRD dengan X dan Y</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Local Reachability Density (LRD) ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tabulate</span><span class="p">(</span><span class="n">df_lrd</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="s1">&#39;keys&#39;</span><span class="p">,</span> <span class="n">tablefmt</span><span class="o">=</span><span class="s1">&#39;grid&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== Local Reachability Density (LRD) ===
++----+---------+-----+-----+-----------+
+|    |   Index |   X |   Y |       LRD |
++====+=========+=====+=====+===========+
+|  0 |       0 |   3 |   7 | 0.212767  |
++----+---------+-----+-----+-----------+
+|  1 |       1 |   8 |   2 | 0.192865  |
++----+---------+-----+-----+-----------+
+|  2 |       2 |   4 |   5 | 0.209359  |
++----+---------+-----+-----+-----------+
+|  3 |       3 |   7 |   8 | 0.212767  |
++----+---------+-----+-----+-----------+
+|  4 |       4 |   5 |   3 | 0.202736  |
++----+---------+-----+-----+-----------+
+|  5 |       5 |  20 |  22 | 0.0407585 |
++----+---------+-----+-----+-----------+
+|  6 |       6 |  25 |  30 | 0.0361775 |
++----+---------+-----+-----+-----------+
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="6">
+<li><p>Menghitung Local Outlier Factor (LOF)</p></li>
+</ol>
+<p>LOF dihitung dengan rumus:</p>
+<p><span class="math notranslate nohighlight">\(
+  \text{LOF}_k(A) := \frac{1}{|N_k(A)|} \sum_{B \in N_k(A)} \frac{\text{lrd}_k(B)}{\text{lrd}_k(A)} = \frac{1}{|N_k(A)| \cdot \text{lrd}_k(A)} \sum_{B \in N_k(A)} \text{lrd}_k(B)
+  \)</span></p>
+<p>LOF menunjukkan seberapa besar titik tersebut menjadi outlier dibandingkan dengan tetangganya.</p>
+<p>Interpretasi:</p>
+<ul class="simple">
+<li><p>LOF ≈ 1 -&gt;inlier(kepadatan mirip tetangga)</p></li>
+<li><p>LOF &gt; 1 -&gt;Outlier(kepadatan lebih rendah</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Menghitung Local Outlier Factor (LOF)</span>
+<span class="n">lof_data</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Mengambil LRD dari DataFrame df_lrd</span>
+<span class="n">lrd_values</span> <span class="o">=</span> <span class="n">df_lrd</span><span class="p">[</span><span class="s2">&quot;LRD&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">lrd_neighbors</span> <span class="o">=</span> <span class="p">[</span><span class="n">lrd_values</span><span class="p">[</span><span class="n">neighbor</span><span class="p">]</span> <span class="k">for</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="n">neighbors_indices</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>  <span class="c1"># LRD dari tetangga</span>
+    <span class="n">lof</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">lrd_neighbors</span><span class="p">)</span> <span class="o">/</span> <span class="n">lrd_values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># Rumus LOF</span>
+
+    <span class="c1"># Menentukan apakah data termasuk outlier</span>
+    <span class="n">outlier_label</span> <span class="o">=</span> <span class="s2">&quot;Outlier&quot;</span> <span class="k">if</span> <span class="n">lof</span> <span class="o">&gt;</span> <span class="mf">1.5</span> <span class="k">else</span> <span class="s2">&quot;Normal&quot;</span>
+
+    <span class="c1"># Menyimpan hasil (Index, X, Y, LOF, Outlier)</span>
+    <span class="n">lof_data</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">lof</span><span class="p">,</span> <span class="n">outlier_label</span><span class="p">])</span>
+
+<span class="c1"># Membuat DataFrame untuk LOF</span>
+<span class="n">df_lof</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">lof_data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Index&quot;</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;LOF&quot;</span><span class="p">,</span> <span class="s2">&quot;Status&quot;</span><span class="p">])</span>
+
+<span class="c1"># Menampilkan tabel LOF</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Local Outlier Factor (LOF) ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tabulate</span><span class="p">(</span><span class="n">df_lof</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="s1">&#39;keys&#39;</span><span class="p">,</span> <span class="n">tablefmt</span><span class="o">=</span><span class="s1">&#39;grid&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== Local Outlier Factor (LOF) ===
++----+---------+-----+-----+----------+----------+
+|    |   Index |   X |   Y |      LOF | Status   |
++====+=========+=====+=====+==========+==========+
+|  0 |       0 |   3 |   7 | 0.978947 | Normal   |
++----+---------+-----+-----+----------+----------+
+|  1 |       1 |   8 |   2 | 1.07996  | Normal   |
++----+---------+-----+-----+----------+----------+
+|  2 |       2 |   4 |   5 | 1.00031  | Normal   |
++----+---------+-----+-----+----------+----------+
+|  3 |       3 |   7 |   8 | 0.978947 | Normal   |
++----+---------+-----+-----+----------+----------+
+|  4 |       4 |   5 |   3 | 1.01115  | Normal   |
++----+---------+-----+-----+----------+----------+
+|  5 |       5 |  20 |  22 | 3.77599  | Outlier  |
++----+---------+-----+-----+----------+----------+
+|  6 |       6 |  25 |  30 | 4.29634  | Outlier  |
++----+---------+-----+-----+----------+----------+
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="menghitung-lof-menggunakan-library-sklearn">
+<h2><strong>Menghitung LOF menggunakan Library sklearn</strong><a class="headerlink" href="#menghitung-lof-menggunakan-library-sklearn" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocalOutlierFactor</span>
+
+<span class="c1"># Data contoh (termasuk beberapa outlier)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">22</span><span class="p">],</span> <span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>  <span class="c1"># Outlier di sini</span>
+<span class="p">])</span>
+
+<span class="c1"># Membuat DataFrame</span>
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">]</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+
+<span class="c1"># Menentukan jumlah tetangga k</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1"># Inisialisasi model LOF</span>
+<span class="n">lof</span> <span class="o">=</span> <span class="n">LocalOutlierFactor</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;euclidean&#39;</span><span class="p">)</span>
+
+<span class="c1"># Menyesuaikan model dengan data</span>
+<span class="n">lof</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="c1"># you need to fit the model to the data first</span>
+
+<span class="c1"># Mendapatkan LOF score</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;LOF_Score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">lof</span><span class="o">.</span><span class="n">negative_outlier_factor_</span>  <span class="c1"># Semakin tinggi, semakin besar kemungkinan outlier</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;Outlier&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;LOF_Score&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">1.5</span><span class="p">,</span> <span class="s2">&quot;Outlier&quot;</span><span class="p">,</span> <span class="s2">&quot;Normal&quot;</span><span class="p">)</span>  <span class="c1"># Ambang batas LOF untuk outlier</span>
+
+<span class="c1"># Menampilkan hasil</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    X   Y  LOF_Score  Outlier
+0   3   7   0.978947   Normal
+1   8   2   1.079964   Normal
+2   4   5   1.000306   Normal
+3   7   8   0.978947   Normal
+4   5   3   1.011151   Normal
+5  20  22   3.775987  Outlier
+6  25  30   4.296342  Outlier
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="visualisasi-outlier">
+<h2><strong>Visualisasi Outlier</strong><a class="headerlink" href="#visualisasi-outlier" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocalOutlierFactor</span>
+
+<span class="c1"># Data dengan outlier di (20,22) dan (25,30)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">22</span><span class="p">],</span> <span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>  <span class="c1"># Outlier</span>
+<span class="p">])</span>
+
+<span class="c1"># Membuat model LOF</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># Jumlah tetangga</span>
+<span class="n">lof</span> <span class="o">=</span> <span class="n">LocalOutlierFactor</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+<span class="n">outlier_scores</span> <span class="o">=</span> <span class="n">lof</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># -1 untuk outlier, 1 untuk inlier</span>
+<span class="n">lof_scores</span> <span class="o">=</span> <span class="o">-</span><span class="n">lof</span><span class="o">.</span><span class="n">negative_outlier_factor_</span>  <span class="c1"># Semakin tinggi, semakin outlier</span>
+
+<span class="c1"># Membuat DataFrame untuk hasil</span>
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;LOF Score&quot;</span><span class="p">,</span> <span class="s2">&quot;Status&quot;</span><span class="p">]</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;LOF Score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lof_scores</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;Outlier&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Outlier&quot;</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;Normal&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outlier_scores</span><span class="p">]</span>
+
+<span class="c1"># Menampilkan DataFrame hasil</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Hasil LOF ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="c1"># Visualisasi hasil</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">lof_scores</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;coolwarm&#39;</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Menandai outlier</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">outlier_scores</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>  <span class="c1"># Jika outlier</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Outlier&#39;</span> <span class="k">if</span> <span class="s1">&#39;Outlier&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Visualisasi LOF - Deteksi Outlier&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== Hasil LOF ===
+    X   Y  LOF Score  Outlier
+0   3   7   0.978947   Normal
+1   8   2   1.079964   Normal
+2   4   5   1.000306   Normal
+3   7   8   0.978947   Normal
+4   5   3   1.011151   Normal
+5  20  22   3.775987  Outlier
+6  25  30   4.296342  Outlier
+</pre></div>
+</div>
+<img alt="_images/097b4fd9a172e07bbc0af3139c4dbd3a02faa4201f5c80a74965ae86ad4790a6.png" src="_images/097b4fd9a172e07bbc0af3139c4dbd3a02faa4201f5c80a74965ae86ad4790a6.png" />
+</div>
+</div>
+</section>
+<section id="kelebihan-lof">
+<h2><strong>Kelebihan LOF</strong><a class="headerlink" href="#kelebihan-lof" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Mendeteksi outlier lokal yang tidak terlihat metode global</p></li>
+<li><p>Adaptif terhadap variasi kapdatan data</p></li>
+<li><p>Cocok untuk data multidimensi</p></li>
+</ol>
+</section>
+<section id="kekurangan-lof">
+<h2><strong>Kekurangan LOF</strong><a class="headerlink" href="#kekurangan-lof" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Tidak ada nilai ambang universal</p></li>
+<li><p>Komputasi lambat untuk data besar</p></li>
+<li><p>Sensitif terhadap pemilihan K</p></li>
+</ol>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Mencari%20Outlayer.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><strong>Mendeteksi Outlier Menggunakan K-Nearest Neighbors (KNN)</strong></p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Naive%20Bayes.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><strong>Naive Bayes</strong></p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bagaimana-lof-bekerja"><strong>Bagaimana LOF Bekerja?</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tahapan-penerapan-penggunaan-lof-local-outlier-factor"><strong>Tahapan Penerapan Penggunaan LOF (Local Outlier Factor)</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#menghitung-lof-menggunakan-library-sklearn"><strong>Menghitung LOF menggunakan Library sklearn</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-outlier"><strong>Visualisasi Outlier</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kelebihan-lof"><strong>Kelebihan LOF</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kekurangan-lof"><strong>Kekurangan LOF</strong></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

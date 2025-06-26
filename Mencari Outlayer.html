@@ -1,0 +1,1230 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Mendeteksi Outlier Menggunakan K-Nearest Neighbors (KNN) &#8212; My sample book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Mencari Outlayer';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Local Outlier Factor" href="Local%20Outlier%20Factor%20%28LOF%29.html" />
+    <link rel="prev" title="Data Understanding" href="Penambangan%20Data%20_Data%20Understanding.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="My sample book - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="My sample book - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Welcome to my website
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Penambangan%20Data%20_Data%20Understanding.html"><strong>Data Understanding</strong></a></li>
+
+
+
+
+
+
+
+<li class="toctree-l1 current active"><a class="current reference internal" href="#"><strong>Mendeteksi Outlier Menggunakan K-Nearest Neighbors (KNN)</strong></a></li>
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="Local%20Outlier%20Factor%20%28LOF%29.html"><strong>Local Outlier Factor</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Naive%20Bayes.html"><strong>Naive Bayes</strong></a></li>
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="23-112_Fariel%20Nur%20Rizky%20Maulana_UTS_Pendat.html"><strong>Upload File csv</strong></a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="K-Mean.html"><strong>K-Mean</strong></a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="Decision%20Tree.html"><strong>🌳 Apa Itu Decision Tree?</strong></a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="Binning%20%28Diskritisasi%20Menggunakan%20K-Mean%20Clustering%29.html"><strong>📌 Binning (Diskritisasi) Menggunakan K-Means Clustering</strong></a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="Pra_Uas.html"><strong>Analisis dan Implementasi Model Machine Learning untuk Klasifikasi Jamur (Beracun vs. Dapat Dimakan) pada Secondary Mushroom Dataset</strong></a></li>
+
+
+
+
+
+
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FMencari Outlayer.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/Mencari Outlayer.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Mendeteksi Outlier Menggunakan K-Nearest Neighbors (KNN)</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#"><strong>Mendeteksi Outlier Menggunakan K-Nearest Neighbors (KNN)</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#apa-itu-deteksi-outlier"><strong>1. Apa Itu Deteksi Outlier?</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#metode-knn-dalam-deteksi-outlier"><strong>2. Metode KNN dalam Deteksi Outlier</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#perhitungan-euclidean-distance-dalam-knn"><strong>3. Perhitungan Euclidean Distance dalam KNN</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#rata-rata-jarak-k-tetangga-terdekat"><strong>4. Rata-rata Jarak k Tetangga Terdekat</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#langkah-langkah-mendeteksi-outlier"><strong>5. Langkah-Langkah Mendeteksi Outlier</strong></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mengambil-data-postgresql"><strong>Mengambil Data PostgreSQL:</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mengambil-data-mysql"><strong>Mengambil Data MySQL:</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#menggabungkan-database-mysql-dan-postgresql"><strong>Menggabungkan Database MySQL dan PostgreSQL</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kode-yang-digunakan-untuk-mencari-knn-dengan-perhitungan-euclidean-distance"><strong>Kode yang digunakan untuk mencari KNN dengan Perhitungan Euclidean Distance</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#penjelasan-perhitungan-euclidean-distance-pada-knn-pada-code"><strong>Penjelasan Perhitungan Euclidean Distance pada KNN pada code</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#apa-itu-euclidean-distance"><strong>Apa itu Euclidean Distance?</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bagaimana-euclidean-distance-digunakan-dalam-knn-outlier-detection"><strong>Bagaimana Euclidean Distance Digunakan dalam KNN Outlier Detection?</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#penjelasan-kode"><strong>Penjelasan Kode</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#elemen-elemen-dalam-scatter-plot"><strong>Elemen-elemen dalam Scatter Plot</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kesimpulan"><strong>Kesimpulan</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#kelebihan-kekurangan-knn"><strong>Kelebihan &amp; Kekurangan KNN</strong></a></li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="mendeteksi-outlier-menggunakan-k-nearest-neighbors-knn">
+<h1><strong>Mendeteksi Outlier Menggunakan K-Nearest Neighbors (KNN)</strong><a class="headerlink" href="#mendeteksi-outlier-menggunakan-k-nearest-neighbors-knn" title="Link to this heading">#</a></h1>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="apa-itu-deteksi-outlier">
+<h1><strong>1. Apa Itu Deteksi Outlier?</strong><a class="headerlink" href="#apa-itu-deteksi-outlier" title="Link to this heading">#</a></h1>
+<p>Deteksi outlier adalah proses mengidentifikasi data yang berbeda secara signifikan dari sebagian besar data lainnya. Outlier dapat terjadi karena kesalahan pengukuran, kesalahan pencatatan data, atau memang merupakan informasi penting yang menyimpang dari pola umum.</p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="metode-knn-dalam-deteksi-outlier">
+<h1><strong>2. Metode KNN dalam Deteksi Outlier</strong><a class="headerlink" href="#metode-knn-dalam-deteksi-outlier" title="Link to this heading">#</a></h1>
+<p>Metode K-Nearest Neighbors (KNN) bekerja dengan cara:</p>
+<ul class="simple">
+<li><p>Menghitung jarak antara setiap titik dengan titik lainnya.</p></li>
+<li><p>Menentukan k tetangga terdekat untuk setiap titik.</p></li>
+<li><p>Menghitung rata-rata jarak ke k tetangga terdekat.</p></li>
+<li><p>Menentukan threshold untuk mendeteksi outlier berdasarkan distribusi jarak.</p></li>
+<li><p>Metode KNN dapat menggunakan berbagai metrik jarak, tetapi yang paling umum adalah Euclidean Distance.</p></li>
+</ul>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="perhitungan-euclidean-distance-dalam-knn">
+<h1><strong>3. Perhitungan Euclidean Distance dalam KNN</strong><a class="headerlink" href="#perhitungan-euclidean-distance-dalam-knn" title="Link to this heading">#</a></h1>
+<p>Euclidean Distance antara dua titik 𝑝 dan 𝑞 dalam ruang 𝑛-dimensi dihitung dengan rumus:</p>
+<p><img alt="Screenshot 2025-03-06 011227.png" src="data:image/png;base64,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" /></p>
+<p>Jika kita memiliki dua titik dalam ruang dua dimensi, misalnya:</p>
+<ul class="simple">
+<li><p>𝑝=(𝑥1,𝑦1)</p></li>
+<li><p>𝑞=(𝑥2,𝑦2)</p></li>
+</ul>
+<p>Maka jaraknya adalah:</p>
+<p><img alt="image.png" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAS8AAAAkCAYAAADYbryvAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAABRjSURBVHhe7Zx7VFTX9fg/YHkNIMxgRhQEHRRlgKKCRouogGglqZKASotoUpcENPWRaFxAIj+TENvaarGaGlbTKo0pSkg0IVSUYJRIqMYqiqi8hQQSykMER95+//jBLO9lhocCYjOftVgL9t73cObcu/c5Z599R2/ChAn30aFDh44nDH2xQIcOHTqeBHTBS4cOHU8kuuClQ4eOJxJd8NKhQ8cTiZ4uYT/8mThxImvWrBGLdQwi9+/r3OJxExUVJRYJ0AWvJ4DExET++te/isUPjc4xn1x+TPcuIyNDLBKgC17DHBcXF7Zt20ZoaKhYpUPHj5oRUqn0/4mFOoYPb775Jh988AGlpaVilY4+oFQqCQ0NZdKkSVRWVnL37l2xiY7HiEQiYcmSJTz77LPo6elRXl4uNtHKoCbsFQoFnp6eYvGQ4OHhgVKpFIufKJydndHX1+f06dNiFTzm8R0OyOVyvLy8kEgkYhUA4eHhxMTEIJPJWLp0KYcPHyYwMFBsNmT8LzyT/aWnz6xQKNi/fz/z589n7Nix7Ny5kz//+c9a76eYRw5eCoWCRYsWdeugp6cnb7/9Nm5ubgL5UGFvb09sbOxjfVgflVWrVvHvf/9bLIZhML7DgcbGRpYvX85vf/vbbg+8nZ0d3t7e1NbWEh8fz5/+9Cfu379PQECAwG6oCAsLY+vWrUilUrHqf5qe/NDf35/Ro0dz4cIFNm/eTGZmJtOmTSMoKEhsqpGHDl4LFizg5MmTHDlyhJiYGMEKwM7OjoiICL7//nveffddwXVDRXJyMmfOnCE0NPSJXJ3Y2tpiZ2fH+++/L1YNi/EdDqhUKvbs2YO1tTWvvfaaWI2enh5jxozBzMyMzMxM6urqkMlkTJ06VWw6qCxZsoSlS5eSmprKuXPnxOr/aXrzw5EjRzJq1CgAysrK0NfXx9bWVmymkYcOXunp6QQEBFBaWkpjYyM3btxQ64KDg5FKpSQnJwuuGWri4+NpbGwkJCRErBr2rFmzhpSUFLEYhtH4DgeKi4tJTU1l1qxZglVVWVkZy5cvJyAggLy8PLy8vJBKpVRUVHD58mVBG4OJRCIhKCiIiooKDh06JFb/KNDmh/v27WPOnDns3r0bOifltrY28vPzBXbaeOjgBeDu7o6FhQV1dXVcvHgRAFdXV+bMmUNBQcFjn2VUKhXZ2dlMnjy5z0vR4YC5uTkzZszg6NGjYtWwGt/hQkZGBo2NjTzzzDNilZrFixfT2tqqcUx7Iy4urteaI20sX74cGxubH/W96osfent7M23aNM6dO8dHH30kVmvkkYKXUqnEzMyMb7/9FpVKBcDPfvYzzMzM+M9//iM2fyzk5OTQ3t7OtGnTxKphy6uvvkpKSgqtra1i1bAb3+FAWVkZN2/exN7eHi8vL7GadevWMWXKFPbt28epU6fE6l4xMDBAX//hXGXmzJk0NjZy/vx5sepHRU9+qFAoePHFF8nJyeGtt94Sq7XS7zuyaNEiXn/9dUJCQrC3twcQLPMcHR1pbm7m5s2bD1z1//H39ycqKgpvb2/ojLZdbYkTrn1l0aJFREVFERAQgEQiISAgAFdXV7U+MzOTmpoaHB0dH/p/DDU+Pj6kpaWJxdDL+NL5IGzevJnNmzejUCiQy+W89NJLbNq0CblcLjZ/rAQEBBAdHa3e7nl7exMVFYW/v7/YtFdKS0sxMjLCxcVFIF+1ahXTp08nNjaWW7duERkZiY2NjcBmsFAqldjY2FBRUUFeXp5Yrf684kOE4XSKHBAQIPDZLpRKJR4eHgJZT2jzQ4VCwYYNG7hy5QqRkZEsX7682/ZSG30OXu7u7hw5coSIiAhMTEwICgpi7ty5qFQqioqK1Ha2trbcuXOn2ynZwoULWb16NQqFgpiYGA4dOkRYWBgmJiasXLmSXbt29Su4uLu788EHHxAREYGpqSmrV69W98/S0lJgW1dXh5mZmSCoDVd27tzJZ599RklJiVgFPYwvQGBgILt378bGxobp06ezb98+4uLi+OlPf4qvry+7du0SX/JYkEgkxMXFsWzZMszMzPjNb37D3//+dyIiIrCxsWHLli19foC7+O6776CzfKKLwMBAvL29OXnyJDY2NgQHB2Nvb6+2HWzGjx+PpaWlxv8XHh7Oxo0bGTduHBs3bhR83piYGLZv3/7YA1hMTAy//OUvmThxoiCAKZVK3nnnHSIjI/s1IYr9UCKRsGHDBmpra8nLy+OFF15g/vz5jBgxQnypRvoUvBQKBa+++irm5ubs2rWL6OhokpKSuH//PjU1NWRlZUFnTYeZmRmNjY3iJvDz86OwsJD8/HyMjY1RqVRs3LiR6OhosrOzcXNz07ofFtPVH5lMJuiPpaUlt2/fVuffuqioqEAikWBlZSWQi4mNjeXMmTN9/jl16hTBwcHiZrTy8ssv9zpb+fr6ak3U9zS+rq6uPP/88yQmJrJlyxa++uorLC0taWxs5NatW8jlcoyNjdUThFwuZ9WqVbzyyivdylwGm5dffhljY2PWrl1LZGQk1dXVODg4kJKSgq2tLcbGxpiZmQmuUSgUPa7IqqqqaGxsZPTo0fBAcaqLiwtbt27ljTfeUOe9hopx48ahr6/f7X65urri5eVFYmIiFRUVGBkZqUsovLy8GDNmDHfu3OHSpUtIJBICAwPZunXrkAazhQsXolQqOXDgAE1NTRgZGSGTyaDzrQ+ZTEZVVRVVVVWCa3paIIj9MDw8nFmzZvGLX/yCHTt2sH79euzt7fnhhx/El2rkJ2KBJtasWYODgwPp6enqxKO5uTkjRowQ5Lu6aG5uFvwNYGZmRnp6Or6+vrS1tfH111+rP7ihoSGGhoZ9PiINDQ1FoVDwxRdf9Kk/dB6bix1CTHR0tFg0ICgUCtavX8/cuXORy+V88803YhMAIiMjSUpK4vr162KVAE3j6+zsTE1NDYmJiQBYWVmhp6fHtWvXyMzMRC6Xk5mZiUqlwtPTk/Xr11NRUYGpqSnPP/88p06dYseOHeJm1SiVSsaPHy8Wa6SpqYns7GyN9wFg7NixnD17FpVKxdSpUzEzM6OmpoYvv/wSqVSKhYUFn3zyCXRu+2bPns2UKVO4fv06qamp4uYEGBkZAZCXl9dtO9YbCoWCSZMmdZv5DQ0NMTU17RY829rauHz5ssCBxXR0dHDv3j2BzMHBgYaGBs6fP09QUBANDQ1cunQJgAkTJiCRSLh69SrW1ta88cYbNDY20tbWxs6dO8nJyWHbtm1ax1bbZ9BET/1XKBSUlZXR0tKCg4MDVVVVXLhwATpXlIaGhpSUlODq6spzzz2Hm5sbUqmUP/zhD1y9elXcnJoH/XD37t3qk8aHodfgpVQqcXFxobm5mZycHLXczs4ORPmunoiIiMDOzo6VK1dSX18vyAF0HZHW1dUJrtGEUqlk+vTptLS09Ks/P/nJT7CwsBCLh4S1a9dy4MABWltbWbx4MQcPHqS4uFhsxnPPPceKFSvE4j6RmJioDlx0OkhzczNFRUVcvHhRsBr19/dHIpGQkZFBamoq77//Pl5eXixYsID09HS13YMEBAR0yydpo6mpiebmZq0nbJs2bVL/7ujoiLm5Obm5uZSVlREXFyewzcvLo6ioiA0bNgjk2uhP6kHMs88+y6xZs8RinnrqKaytrdU53i7a29sxNzfvd8nKsWPHOHbsGEFBQcjlcm7evKkeq8mTJ6Ovr09hYaG6iPP06dMkJCQQGxvLvHnzCAoKIiEhQdwsdNZfzp8/XyzWSE/9P3DgAHSuks3Nzfnmm28oKyuDzj62tLRw48YNfvjhB7KysqitrWXp0qWiVrozkH7Ya/Dq2rfX1dWRm5sLnQ/IxIkTu+W7esPJyQlLS0uKi4vVqw8vLy9Gjx6NSqWioKBAfEk3HrY/ra2tGnMPD9Kf1QWdN7+goEBjIHqQyMhIAD7//HN8fX3x9/dn3759Apv169eTmJioNdfVHzw8PLC2tqaurk4Q4Ltob29HJpOptyolJSU4OTkxYcIEsamad955RywaECZPnoyBgYHWSafrOelr8OrLBKiNvXv3snfvXrGYd999l4qKCt5++22x6pFwcnLCwMCAa9euqWUKhULtC1OmTOl3EWd8fDzx8fFi8UOjVCppa2tTP0dTp05VP1uFhYVUVVWRnp6Og4OD+FKN9MUP+0qfcl501mp0rZbc3d2RSqXU1dXR3NxMQkICs2fPpqqqipaWFq2vQDg5OWFsbCx4ydjNzQ0zMzOuX7+unvU9PDzw8fHpcRbV1J8H828PYmJiQkdHB+3t7WKVACcnJ55++ul+/YwbN07cjFYyMzPJy8tjyZIl3cbohRde4J///KdAJqan8V2yZAkfffQRr732GkqlEgsLCyorK9Wz5a5du9i2bRsA27dvZ+7cuRw+fBg6tyoNDQ0aT8QGGolEwu9//3sOHz6Mh4eH+vS0a9JZuHAhCQkJ/X7tycTEBAMDg17v8VBSV1eHnp6e1lzrmDFjaGlpUQduLy8vrKysaGhoID8//5GLOAeCrv50TdBdK+Xq6up+Py999cO+0mvwKi8vp76+Hn19fSQSCRKJhODgYCwtLfnvf/+Lm5sbra2tfP3115SVldHY2IhEItGYBHZ0dGTEiBEYGxtD5yzj4+NDdXW1esvj7e3Nzp07iY2N5de//rWohZ77oy3fJZPJuHPnTq9vrCcnJxMTE9PnnzfffJMzZ86Im+mREydOIJVKBfmTlStXcvToUSorKwW2YnoaXz8/P+zs7Bg1ahTOzs4YGRlRUVEBnadu9vb2GmuNgoODsbOz48SJE1q3eQOJl5cXM2bMQC6XM3nyZKytrbl79y6VlZVIJBKWLl1KeXm5xhVjT0ilUgwMDHq9x0NJbW0tLS0tWoOX2Il9fX0ZOXIkxcXF6kmni4cp4hwIOjo61L9LJBLmzZuHoaGh1lKdnuirH/aVXoPX1atXSUlJQSaTcfDgQRITE2ltbaWoqIhJkyaxYMECQRI1Pz8fU1NTxo4dK2jHzs6OMWPGcO/ePWbOnMmRI0d47733uHv3Ljt27FA7TkNDAyqVCn19fZycnARtoKU/jo6OWmckOzs7rK2t+e677/o9UwwGaWlp1NbWCqrBN27cSFJSksBOG9rGt6ioiPr6eiZMmMD48ePJyclh/vz5JCYmEhoaSkpKSrdvp/D09CQwMJC0tDT27Nkj0A0WBQUFVFVVcffuXVasWEFeXh4GBgZER0dz+PBh9PX1Nb7P2RsKhYL29vZeDzuGkqysLGpqarSWE3z55Ze0tLQQHh5OcnIyfn5+dHR0dHuOFQ9ZxDkQnDlzBnNzc6Kjo/nwww9xd3enqamp3+M8GH7Yp+/zunjxIufOnePWrVt8/PHH/OMf/+Bf//oXpaWlHD9+nLNnz6pt5XI5M2bM4Pbt22RnZ6vlc+fOxcfHh/Lycl566SUqKys5evQo8fHxghVHRUUFiYmJyGQyTE1NOXHihFrXhbg/M2bMwNDQkM8++6xb/snPz485c+aQmZmpceUx1Ny7dw+5XM68efMoKytj0qRJtLa28vHHH4tNNaJtfLOzs7l+/TpXr15l//79JCcnk5eXR25uLnFxcd1OON3d3Vm7di2nTp3iL3/5C5s2bcLCwkJrznCgqKur4+zZs5SXl6ufpbS0NL799luOHTvGwYMHNeatli1bxr179/j888/FKug8EdfT0yMhIYH6+nqx+pF45plnaGhoEDznfaG1tZVp06bh6OhIaWmpYDUlkUgwMTEhISGB0tJSsrKy1Mn6pKQk9eqkq4izoKCAt956i5CQEJydnXs80Rso5HI5TU1NfPjhh5SUlHDp0iVcXFy4c+dOt3Hu+uqb7OxsjbnrwfDDXldeXRQXF5OWlqaOmiqVioyMjG5RNDU1lZKSEjw8PAQ5KwcHB4yMjMjPz6eqqoqTJ092u/ZB7O3tKSwsFIvVdPXHysoKKysr6urqNOa7pk+fzu3bt3s9Yh9KugLy4sWL2bJlC8ePHxebaEXb+NKZ3M7IyFBvncV/d6FQKAgPDyc3N5fq6mrWrVuHh4dHt23MYCG+/+K/+4u3tzdjx47lq6++6rbdGghu3Ljx0O2mp6fT3t7erUbrd7/7HXv37mX16tWcPHkSR0dHbGxsuHbtmnoXInnEIs5Hwc7Ojj179rBnzx58fX1JS0tT55bPnz/f7/EYDD/sc/DqKyqVik8//RSpVMqyZcugc3vi5ubG/fv3aW1t7bVQc+3atchksh7zSRKJBB8fH+bOnYu5uTn19fXMmjVL4NDe3t44OzvzxRdfdFuRPU7y8vK4cuUKnp6eXL58WV0/0xc0jW9/CQ8Px83NjZCQEHbs2MGLL76IVCqlurpabPrYiYqK4siRI9ja2uLs7ExiYiJhYWECGz8/P27fvs2nn34qkA8Ue/fu1Vqa0BunT58mKyuLmTNnCgo4R40aRX19Pbm5uQQGBrJs2TIKCwsFp9CPWsT5KMhkMiwtLfn+++/Jy8sjIiICb29vzp8/L+ijp6cnf/vb3wgICGDkyJGEhYWxf/9+QU52sPxw0L7Dft26dSxYsICkpCTmzJkjOCG7cOFCjzmW119/nStXrvT4MM6ePZs1a9YIglVVVRW7d++mrKwMSecrKE1NTT0W9T0uFi5cSGxsLOHh4d3eCOgLXeP7xz/+cUgS7cOV4OBgfvWrX3Ho0CGN9UrDAYlEon41a+vWrahUKkJCQlixYgUGBgZ0dHSQnp7Oe++9N6ye082bN+Pn54eenh7Nzc188skn/f5an8H0w0ELXgBbtmzB1tZWUJQ4VGzbto2nnnqK7du3D+iADSQ///nPNeb0+srjHN/hwNNPP01YWBjHjx/vcaIbDigUCl555RVu3LjRrcbvf5nB9MNBDV46dOjQMVgMeM5Lhw4dOoYCXfDSoUPHE4kueOnQoeOJRBe8dOjQ8USiC146dOh4ItEFLx06dDyR/B/6TgTObzgIMQAAAABJRU5ErkJggg==" /></p>
+<p>Contoh perhitungan sederhana:</p>
+<p>Misalkan ada dua titik:</p>
+<ul class="simple">
+<li><p>𝑝=(3,4)</p></li>
+<li><p>𝑞=(6,8)
+Maka:</p></li>
+</ul>
+<p><img alt="image.png" src="data:image/png;base64,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" /></p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="rata-rata-jarak-k-tetangga-terdekat">
+<h1><strong>4. Rata-rata Jarak k Tetangga Terdekat</strong><a class="headerlink" href="#rata-rata-jarak-k-tetangga-terdekat" title="Link to this heading">#</a></h1>
+<p>Setelah menghitung jarak Euclidean antara titik-titik dalam dataset, kita dapat menentukan rata-rata jarak ke k tetangga terdekat.</p>
+<p>Misalkan kita memiliki data:</p>
+<p><img alt="image.png" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAuoAAADQCAYAAABRGUREAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAABOmSURBVHhe7d1faJX3/cDxT7qqVbO6xRo6IZXDKg5c16HnMGI3pNm6dqe27mJM6E3BDU71wguhuI0wCWSFMehAtkigE7yxC4N1tuasneCWMQzbOZVZETrsGqzFuWyV/jkueEqb380M9TvjftUn3eOT1wtyke/3k8vvyfs8ec6TjlKpNB0AAECu3JQuAAAA/3tCHQAAckioAwBADnX8t3vUb7/99ujq6orFixdHR0dHug0AAPw/TU9Px9TUVJw/fz7OnTuXbl9m1lBftGhRfPrTn46IiFarFe12O6anrzgK3MB6enrizJkz6TKQIecMuKSjoyMWLFgQy5Yti/fffz/++te/xsWLF9OxiKvd+vLpT3862u12vPHGG3Hx4kWRDgAA12l6ejra7Xb84x//iPfee2/mwviVXDHUb7/99oiIeOedd9ItAAAgA2+++WbcdNNNM+2dumKod3V1RavVSpcBAIAMvfPOO9HV1ZUuR8wW6osXL452u50uAwAAGXr33Xdj8eLF6XLEbKHe0dHhnnQAAJhj77333qxPVrxiqAMAAP9bQh0AAHJIqAMAQA4JdQAAyCGhDgAAOZRZqO/YsSMOHToUO3bsuOz7S1/PPfdcPP300/Gd73wn1qxZk/44cAO5//77Y2RkJH7+85/Hxo0bZ9Yfe+yxOHjwYDzxxBOzPmoK+O9WrlwZP/nJT+KZZ56Jb37zmzPra9asiX379sW+ffv8LoV5ILNQn83LL78cR44cifHx8Wi323HPPffErl27olwup6PADeKFF16IY8eOxdKlS+OrX/1qRER87nOfi97e3mi1WvHcc8/F1NRU+mPA/9PZs2djfHw8Ojo64otf/OLMG9977703urq64k9/+lP85S9/SX8MKJg5D/XXXnstnnzyyXjiiSfisccei+PHj8dtt90W1Wo1HQVuIL/+9a/jn//8Z9x5551x//33x9e+9rX4xCc+EX/84x9jfHw8HQc+pF/+8pcxMTERn/rUp+Lee++NO+64I9atWxeTk5NRr9fTcaCA5jzUP2hqaiqef/75uHDhQvT09MTKlSvTEeAG8dJLL8Vvf/vbWLRo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" /></p>
+<p>Jika kita memilih k = 3, maka untuk ID 1:</p>
+<ol class="arabic simple">
+<li><p>Hitung jarak ke setiap titik lainnya.</p></li>
+<li><p>Pilih 3 tetangga terdekat.</p></li>
+<li><p>Hitung rata-rata jarak ke 3 tetangga tersebut.</p></li>
+</ol>
+<p>Rumus rata-rata jarak:</p>
+<p><img alt="image.png" src="data:image/png;base64,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" /></p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="langkah-langkah-mendeteksi-outlier">
+<h1><strong>5. Langkah-Langkah Mendeteksi Outlier</strong><a class="headerlink" href="#langkah-langkah-mendeteksi-outlier" title="Link to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>pymysql
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: pymysql in /usr/local/lib/python3.11/dist-packages (1.1.1)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>psycopg2-binary
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting psycopg2-binary
+  Downloading psycopg2_binary-2.9.10-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+Downloading psycopg2_binary-2.9.10-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.0 MB)
+?25l   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">0.0/3.0 MB</span> <span class=" -Color -Color-Red">?</span> eta <span class=" -Color -Color-Cyan">-:--:--</span>
+   ━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">0.2/3.0 MB</span> <span class=" -Color -Color-Red">5.9 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   ━━━━━━━━━━━━━━━━━━━━━━━━━╺━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">1.9/3.0 MB</span> <span class=" -Color -Color-Red">27.4 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">3.0/3.0 MB</span> <span class=" -Color -Color-Red">30.0 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
+?25h
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Installing collected packages: psycopg2-binary
+Successfully installed psycopg2-binary-2.9.10
+</pre></div>
+</div>
+</div>
+</div>
+<section id="mengambil-data-postgresql">
+<h2><strong>Mengambil Data PostgreSQL:</strong><a class="headerlink" href="#mengambil-data-postgresql" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">psycopg2</span>
+
+<span class="c1"># Konfigurasi koneksi ke database Aiven PostgreSQL</span>
+<span class="n">host</span> <span class="o">=</span> <span class="s2">&quot;postgre23-112-postgresql23-112.h.aivencloud.com&quot;</span>
+<span class="n">database</span> <span class="o">=</span> <span class="s2">&quot;defaultdb&quot;</span>
+<span class="n">user</span> <span class="o">=</span> <span class="s2">&quot;avnadmin&quot;</span>
+<span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;AVNS_Ellqk9Jx9uICNV-C29t&quot;</span>
+<span class="n">port</span> <span class="o">=</span> <span class="s2">&quot;15184&quot;</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Koneksi ke database PostgreSQL</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">database</span><span class="o">=</span><span class="n">database</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Koneksi PostgreSQL berhasil!&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Menjalankan query untuk mengambil data dari tabel `postgresql` dalam schema `postgresqliris`</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM postgresqliris.postgresql ORDER by id ASC;&quot;</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+    <span class="c1"># Menampilkan hasil query</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Data dalam tabel postgresqliris.postgresql:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">OperationalError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="c1"># Menangani error jika koneksi gagal</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error connecting to PostgreSQL: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">finally</span><span class="p">:</span>
+    <span class="c1"># Menutup koneksi database jika terbuka</span>
+    <span class="k">if</span> <span class="s1">&#39;conn&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conn</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Koneksi PostgreSQL ditutup.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Error connecting to PostgreSQL: could not translate host name &quot;postgre23-112-postgresql23-112.h.aivencloud.com&quot; to address: Name or service not known
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="mengambil-data-mysql">
+<h2><strong>Mengambil Data MySQL:</strong><a class="headerlink" href="#mengambil-data-mysql" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pymysql</span>
+
+<span class="c1"># Konfigurasi koneksi ke database Aiven MySQL</span>
+<span class="n">host</span> <span class="o">=</span> <span class="s2">&quot;mysql23-112-irismysql23-112.h.aivencloud.com&quot;</span>
+<span class="n">user</span> <span class="o">=</span> <span class="s2">&quot;avnadmin&quot;</span>
+<span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;AVNS_cTNd4CUt1kk0Z7MPIC1&quot;</span>
+<span class="n">database</span> <span class="o">=</span> <span class="s2">&quot;defaultdb&quot;</span>
+<span class="n">port</span> <span class="o">=</span> <span class="mi">15786</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Koneksi ke database MySQL</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">pymysql</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="n">database</span><span class="o">=</span><span class="n">database</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Koneksi MySQL berhasil!&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Menjalankan query untuk mengambil data dari tabel `mysqliris` dalam schema `flowers`</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM mysqliris.flowers;&quot;</span><span class="p">)</span>
+    <span class="n">tables</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+    <span class="c1"># Menampilkan hasil query</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Daftar tabel dalam defaultdb:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tables</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="n">pymysql</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">OperationalError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+  <span class="c1"># Menangani error jika koneksi gagal</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error connecting to MySQL: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">finally</span><span class="p">:</span>
+    <span class="c1"># Menutup koneksi database jika terbuka</span>
+    <span class="k">if</span> <span class="s1">&#39;conn&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span> <span class="ow">and</span> <span class="n">conn</span><span class="o">.</span><span class="n">open</span><span class="p">:</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Error connecting to MySQL: (2003, &quot;Can&#39;t connect to MySQL server on &#39;mysql23-112-irismysql23-112.h.aivencloud.com&#39; ([Errno -2] Name or service not known)&quot;)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="menggabungkan-database-mysql-dan-postgresql">
+<h2><strong>Menggabungkan Database MySQL dan PostgreSQL</strong><a class="headerlink" href="#menggabungkan-database-mysql-dan-postgresql" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pymysql</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">psycopg2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># Konfigurasi koneksi ke database Aiven MySQL</span>
+<span class="n">mysql_config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;mysql23-112-irismysql23-112.h.aivencloud.com&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;avnadmin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;AVNS_cTNd4CUt1kk0Z7MPIC1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;database&quot;</span><span class="p">:</span> <span class="s2">&quot;defaultdb&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="mi">15786</span>
+<span class="p">}</span>
+
+<span class="c1"># Konfigurasi koneksi ke database Aiven PostgreSQL</span>
+<span class="n">postgres_config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;postgre23-112-postgresql23-112.h.aivencloud.com&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;database&quot;</span><span class="p">:</span> <span class="s2">&quot;defaultdb&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;avnadmin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;AVNS_Ellqk9Jx9uICNV-C29t&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="mi">15184</span>
+<span class="p">}</span>
+
+<span class="c1"># Fungsi untuk mengambil data dari MySQL (hanya petal length &amp; petal width)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fetch_mysql_data</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">pymysql</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="o">**</span><span class="n">mysql_config</span><span class="p">)</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;SELECT id, class, `petal length`, `petal width` FROM mysqliris.flowers;&#39;</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>  <span class="c1"># Ambil nama kolom</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+
+        <span class="c1"># Ubah nama kolom agar seragam</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;petal length&quot;</span><span class="p">:</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal width&quot;</span><span class="p">:</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">})</span>
+
+        <span class="k">return</span> <span class="n">df</span>
+    <span class="k">except</span> <span class="n">pymysql</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">OperationalError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error connecting to MySQL: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+<span class="c1"># Fungsi untuk mengambil data dari PostgreSQL (hanya sepal length &amp; sepal width)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fetch_postgres_data</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="o">**</span><span class="n">postgres_config</span><span class="p">)</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;SELECT id, &quot;Class&quot;, &quot;sepal length&quot;, &quot;sepal width&quot; FROM postgresqliris.postgresql ORDER by id ASC;&#39;</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>  <span class="c1"># Ambil nama kolom</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+
+        <span class="c1"># Ubah nama kolom agar seragam</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Class&quot;</span><span class="p">:</span> <span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal length&quot;</span><span class="p">:</span> <span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal width&quot;</span><span class="p">:</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">})</span>
+
+        <span class="k">return</span> <span class="n">df</span>
+    <span class="k">except</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">OperationalError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error connecting to PostgreSQL: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+<span class="c1"># Ambil data dari kedua database</span>
+<span class="n">mysql_df</span> <span class="o">=</span> <span class="n">fetch_mysql_data</span><span class="p">()</span>
+<span class="n">postgres_df</span> <span class="o">=</span> <span class="n">fetch_postgres_data</span><span class="p">()</span>
+
+<span class="c1"># Gabungkan data berdasarkan id dan class</span>
+<span class="n">combined_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">postgres_df</span><span class="p">,</span> <span class="n">mysql_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;class&quot;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">)</span>
+
+<span class="c1"># Tampilkan hasil</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Data Gabungan dari MySQL dan PostgreSQL:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">combined_df</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Error connecting to MySQL: (2003, &quot;Can&#39;t connect to MySQL server on &#39;mysql23-112-irismysql23-112.h.aivencloud.com&#39; ([Errno -2] Name or service not known)&quot;)
+Error connecting to PostgreSQL: could not translate host name &quot;postgre23-112-postgresql23-112.h.aivencloud.com&quot; to address: Name or service not known
+</pre></div>
+</div>
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">KeyError</span><span class="g g-Whitespace">                                  </span>Traceback (most recent call last)
+<span class="nn">/tmp/ipython-input-5-1162303469.py</span> in <span class="ni">&lt;cell line: 0&gt;</span><span class="nt">()</span>
+<span class="g g-Whitespace">     </span><span class="mi">68</span> 
+<span class="g g-Whitespace">     </span><span class="mi">69</span> <span class="c1"># Gabungkan data berdasarkan id dan class</span>
+<span class="ne">---&gt; </span><span class="mi">70</span> <span class="n">combined_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">postgres_df</span><span class="p">,</span> <span class="n">mysql_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;class&quot;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">71</span> 
+<span class="g g-Whitespace">     </span><span class="mi">72</span> <span class="c1"># Tampilkan hasil</span>
+
+<span class="nn">/usr/local/lib/python3.11/dist-packages/pandas/core/reshape/merge.py</span> in <span class="ni">merge</span><span class="nt">(left, right, how, on, left_on, right_on, left_index, right_index, sort, suffixes, copy, indicator, validate)</span>
+<span class="g g-Whitespace">    </span><span class="mi">168</span>         <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">169</span>     <span class="k">else</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">170</span>         <span class="n">op</span> <span class="o">=</span> <span class="n">_MergeOperation</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">171</span>             <span class="n">left_df</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">172</span>             <span class="n">right_df</span><span class="p">,</span>
+
+<span class="nn">/usr/local/lib/python3.11/dist-packages/pandas/core/reshape/merge.py</span> in <span class="ni">__init__</span><span class="nt">(self, left, right, how, on, left_on, right_on, left_index, right_index, sort, suffixes, indicator, validate)</span>
+<span class="g g-Whitespace">    </span><span class="mi">792</span>             <span class="n">left_drop</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">793</span>             <span class="n">right_drop</span><span class="p">,</span>
+<span class="ne">--&gt; </span><span class="mi">794</span>         <span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_merge_keys</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">795</span> 
+<span class="g g-Whitespace">    </span><span class="mi">796</span>         <span class="k">if</span> <span class="n">left_drop</span><span class="p">:</span>
+
+<span class="nn">/usr/local/lib/python3.11/dist-packages/pandas/core/reshape/merge.py</span> in <span class="ni">_get_merge_keys</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1295</span>                         <span class="n">rk</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">rk</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1296</span>                         <span class="k">if</span> <span class="n">rk</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="ne">-&gt; </span><span class="mi">1297</span>                             <span class="n">right_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right</span><span class="o">.</span><span class="n">_get_label_or_level_values</span><span class="p">(</span><span class="n">rk</span><span class="p">))</span>
+<span class="g g-Whitespace">   </span><span class="mi">1298</span>                         <span class="k">else</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1299</span>                             <span class="c1"># work-around for merge_asof(right_index=True)</span>
+
+<span class="nn">/usr/local/lib/python3.11/dist-packages/pandas/core/generic.py</span> in <span class="ni">_get_label_or_level_values</span><span class="nt">(self, key, axis)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1909</span>             <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">_values</span>
+<span class="g g-Whitespace">   </span><span class="mi">1910</span>         <span class="k">else</span><span class="p">:</span>
+<span class="ne">-&gt; </span><span class="mi">1911</span>             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1912</span> 
+<span class="g g-Whitespace">   </span><span class="mi">1913</span>         <span class="c1"># Check for duplicates</span>
+
+<span class="ne">KeyError</span>: &#39;id&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="n">data_gabung</span> <span class="o">=</span> <span class="n">combined_df</span>
+<span class="n">fitur_kolom</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;petal_length&#39;</span><span class="p">,</span> <span class="s1">&#39;petal_width&#39;</span><span class="p">,</span> <span class="s1">&#39;sepal_length&#39;</span><span class="p">,</span> <span class="s1">&#39;sepal_width&#39;</span><span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data_gabung</span><span class="p">[</span><span class="n">fitur_kolom</span><span class="p">]</span>
+
+<span class="n">X_inliers</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">X_inliers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">X_inliers</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">X_inliers</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]</span>
+<span class="n">X_outliers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=-</span><span class="mi">4</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">X_inliers</span><span class="p">,</span> <span class="n">X_outliers</span><span class="p">]</span>
+
+<span class="n">n_outliers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_outliers</span><span class="p">)</span>
+<span class="n">ground_truth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">ground_truth</span><span class="p">[</span><span class="o">-</span><span class="n">n_outliers</span><span class="p">:]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocalOutlierFactor</span>
+
+<span class="n">clf</span> <span class="o">=</span> <span class="n">LocalOutlierFactor</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">contamination</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">n_errors</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_pred</span> <span class="o">!=</span> <span class="n">ground_truth</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">X_scores</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">negative_outlier_factor_</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">y_pred</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.legend_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">HandlerPathCollection</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">update_legend_marker_size</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">orig</span><span class="p">):</span>
+    <span class="s2">&quot;Customize size of the legend marker&quot;</span>
+    <span class="n">handle</span><span class="o">.</span><span class="n">update_from</span><span class="p">(</span><span class="n">orig</span><span class="p">)</span>
+    <span class="n">handle</span><span class="o">.</span><span class="n">set_sizes</span><span class="p">([</span><span class="mi">20</span><span class="p">])</span>
+
+
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Data points&quot;</span><span class="p">)</span>
+<span class="c1"># plot circles with radius proportional to the outlier scores</span>
+<span class="n">radius</span> <span class="o">=</span> <span class="p">(</span><span class="n">X_scores</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">X_scores</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">X_scores</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">X_scores</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+<span class="n">scatter</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">1000</span> <span class="o">*</span> <span class="n">radius</span><span class="p">,</span>
+    <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
+    <span class="n">facecolors</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Outlier scores&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;prediction errors: </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">n_errors</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
+    <span class="n">handler_map</span><span class="o">=</span><span class="p">{</span><span class="n">scatter</span><span class="p">:</span> <span class="n">HandlerPathCollection</span><span class="p">(</span><span class="n">update_func</span><span class="o">=</span><span class="n">update_legend_marker_size</span><span class="p">)}</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Local Outlier Factor (LOF)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="kode-yang-digunakan-untuk-mencari-knn-dengan-perhitungan-euclidean-distance">
+<h2><strong>Kode yang digunakan untuk mencari KNN dengan Perhitungan Euclidean Distance</strong><a class="headerlink" href="#kode-yang-digunakan-untuk-mencari-knn-dengan-perhitungan-euclidean-distance" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocalOutlierFactor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tabulate</span><span class="w"> </span><span class="kn">import</span> <span class="n">tabulate</span>
+
+<span class="c1"># Pastikan combined_df sudah berisi data</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">combined_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+    <span class="c1"># Pilih fitur numerik yang akan digunakan untuk deteksi outlier</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">]</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">combined_df</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
+
+    <span class="c1"># Tetapkan nilai k secara langsung</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="mi">5</span>
+
+    <span class="c1"># Inisialisasi model KNN untuk deteksi outlier</span>
+    <span class="n">lof</span> <span class="o">=</span> <span class="n">LocalOutlierFactor</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;minkowski&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Fit model dan dapatkan prediksi</span>
+    <span class="n">lof</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">combined_df</span><span class="p">[</span><span class="s2">&quot;distance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">lof</span><span class="o">.</span><span class="n">negative_outlier_factor_</span>  <span class="c1"># Konversi ke nilai positif</span>
+
+    <span class="c1"># Tampilkan semua data dengan tabulate</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Data dengan Distance:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">tabulate</span><span class="p">(</span><span class="n">combined_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;outlier&quot;</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">),</span> <span class="n">headers</span><span class="o">=</span><span class="s1">&#39;keys&#39;</span><span class="p">,</span> <span class="n">tablefmt</span><span class="o">=</span><span class="s1">&#39;psql&#39;</span><span class="p">))</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Data gabungan kosong. Pastikan koneksi ke database berhasil dan data tersedia.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="penjelasan-perhitungan-euclidean-distance-pada-knn-pada-code">
+<h2><strong>Penjelasan Perhitungan Euclidean Distance pada KNN pada code</strong><a class="headerlink" href="#penjelasan-perhitungan-euclidean-distance-pada-knn-pada-code" title="Link to this heading">#</a></h2>
+<section id="apa-itu-euclidean-distance">
+<h3><strong>Apa itu Euclidean Distance?</strong><a class="headerlink" href="#apa-itu-euclidean-distance" title="Link to this heading">#</a></h3>
+<p>Euclidean Distance adalah jarak lurus (garis terpendek) antara dua titik dalam ruang multidimensi.
+Rumus Euclidean Distance antara dua titik A dan B dalam ruang n-dimensi adalah:</p>
+<p><img alt="image.png" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAc4AAAAkCAYAAAAATtrgAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAABovSURBVHhe7Z15VFPX9se/zBATICBhNEAAqREEJCASEZwVFXAsDvikVhxwLihRq7/aOhWrtQ5Y6tDnW2qKut6q9bmE5YSIoqKCWJwQKggiGrASIiDg7x9yl/dmIGEooPezFn9k73Pvusk+++xz9tnnouPs7PweNDQ0NDQ0NBqhSxXQ0NDQ0NDQqIYOnDQ0NDQ0NFpAB04aGhoaGhotoAMnDQ0NDQ2NFujQxUHdH1dXV8yZM4cqpulA3r+n3aa7Qtuu+9JZtlu7di3pMx04PwLEYjH2799PFbeazuqcNG2Htl33hbZd1+XixYukz3Tg7OZ4eHhg1apViIqKoqpoaGhoaDoAPTab/X9UIU33YcOGDfjPf/6Dv/76i6qiUQODwUBYWBjGjRsHHR0dlJSUUJvQdAFoO9H8kwiFQkRGRsLW1hZPnz7Fu3fvqE2AjgicAoEA5ubmePnyJVXVpeguz6mOvn37YuDAgdi1axdVBXwk37G1CIVCGBgYoKqqiqoCj8fD1q1bYWdnhx49eiAqKgr9+/dHenq6SkfpSHg8Hvh8/icZFNT10a5mp+6MOn/4VGjJz9atW4fRo0ejtrYWY8eOxcSJE1FcXKy0fauqagUCAUaOHAkOh0OSx8TEID4+Hmw2myRXx8aNG7F69WqquMNxdHTExo0bMWnSJKqq2zBr1ixkZWVRxUArbfEx4eXlha1bt0IoFFJVCA0NhbW1NW7evInly5cjIyMDPj4+mDx5MrVphyMUCvHdd9/By8uLqvokUOeHXclO3Zk1a9YgJiaGKv4kmTdvHtavX08VQygUwtfXFyUlJVi7di1+/fVXmJubY+LEidSmgLaB86uvvsK1a9eQlJSEpUuXws7OjtCFhYUhPDwcZ86cQWZmJuk6VURGRiIoKAi9evWiqrRi48aNuHLlCm7evEn8XblyBRkZGbhx4waysrJw7NgxjBkzhrjm5MmTSE9PR1RUlNLBtavj4OAALpeLgwcPUlWtssXHxt69e/H48WMsXLgQPB6PqoapqSl69uwJACguLoauri4cHByozToULpeLBQsWoLy8HHv37qWqPwla8sOuYKfuzNy5cxEYGIgjR46gsLCQqv6kKCwsxKFDh9C/f38sXLiQqoaBgQER0woLC1FdXU2KcR+iVeD84YcfsHnzZrx9+xbl5eXIyckBmvchJk+ejLKyMvz73/+mXqYULpeL8PBwmJiYwMLCgqrWCvmMqqysDG/fvsW3336LQYMGISgoCP7+/jh27BgcHR0RGxsLgUBAXJecnAypVIoZM2aQ7tcdmDNnDk6fPk0Vt8oWHyvHjh0jUnwfsnv3bgwaNAjbt28HmvtiQ0MDHj16RGrX0URGRoLNZuPkyZNU1SeFKj/sKnbqrnh6emLs2LHIyclBWloaVf1JcvHiRVy7dg2hoaGkWJCZmYnQ0FD861//AprTuiwWS+VkQ6vAieYbGhgYkIpRpk6dCnt7e61WN5GRkbCyskJjYyMMDQ3B5XKpTbTCxcUFZmZmqKqqQkFBAUmXmZmJqqoqWFhYwNfXl5DLZDJkZWXB3d29W6V/WCwW/Pz8kJKSQlW1yhYfK3l5efjzzz8xcOBApasZABgyZAh8fHyQmZmJEydOUNVqGTVqFI4ePQpvb2+qqkU8PT0xaNAgPH78+JO3lSZ+2Fl26mx27tzZ6q2ssWPHokePHrh8+TJV9UmTkZEBfX19TJgwgaoCmhcfI0eOxPPnzyEWi6lqoDWBs3fv3mhsbMTTp08Jmb+/P6RSKW7cuEFqqwqBQIABAwYgLS0NdXV1MDQ0VNgv1RYXFxcYGxujtLQU+fn5JJ2trS169OiBhoYGSCQSki43NxeNjY3w8fEhybsyX331FU6fPq20QEJbW3zs5ObmwsjICH5+flQVeDweoqOjkZubi2+//ZaqbhE9PT3o6elBX1+fqmqRwMBAMJlM3L59m6r6JFHnh51pp87GwMAAurpaD9NgMBjw8fFBeXk5UlNTqepPmszMTJSWloLP5ytdsMXHx4PBYOD7779HXl4eVQ1oEjg5HA5mzZqFtWvXYtSoUbC1tcXff/9NBCc+nw97e3uUlZUpBCxVTJ8+HeXl5bh37x7Q3DlMTEyozbSid+/e0NHRUTiWwWAwEBoaCgaDgTt37ijMVjMyMiCRSNC7d28wGAySrqsydOhQpc6giS14PB6WL1+O5cuXg8fjgcPhYN68eVi2bFmbJy/thfyZ5M/4IUKhUEGmjkePHkEmk8Hd3Z0k5/F4WLJkCe7evQuRSISpU6cqpAo7kt69e6Ourg4PHz6kqoBuYicAiIiIwOrVqzFkyBCSnM/nk1JhLaHKDzvbTt2VwMBAWFpaKmTfPiQiIgJr1qxBREQE0LyqX716NUJDQ6lNO5326mdynjx5AgsLC4UsRFxcHNhsNtauXQtjY2OsXLmSpJejNnDOmjULR44cQXBwMMzNzREXFwdbW1tUVlYiOzsbAODk5ARzc3OUlpZSL1dKREQEevXqhRMnTqCiogJSqRRGRkZgsVjUphrD5XJha2uLuro6vH79GqGhoQgNDcX06dOxf/9+uLu7IyUlBSKRiHopAKCqqgpMJhOenp5UVZdj8+bN+OOPP1BUVERVtWiLSZMmYfv27bC3t0f//v2xe/du7Ny5E/369cOwYcOQmJhIvQQjR478R38XHo+Hbdu2wdvbGyNGjCBVwM2YMQNbtmzBF198QcgYDAbh+MrIycmBVCpFz549iQGZwWBgyZIlqKysRH5+PmbPno2QkBDo6elRL+8wHBwc8ObNG1y/fp2q0spODAYDkyZNQnx8vMp0dEexfv16TJs2Da6urqRBjc/nY9OmTRCJROBwOMTke8WKFeDz+dTbEFD9sCvYqbvi4uICAwMDlJeXU1VgMBjYuXMnpkyZAiaTicWLF+PQoUNYsGAB7O3tERcX16UmJ5r2M22QSCTQ0dGBvb09IVu4cCHc3Nxw4cIF+Pj4YOrUqTA3NyddJ0dl4Jw0aRJmz56NgoICLF68GHFxcbh9+zZ0dXVJm/O9evWCrq4upFIp6XplyA8z3717l/QKIx0dHTCZTFJbbfDy8gKbzUZTUxNCQkIwc+ZMzJw5E+Hh4bC2tsbdu3eRmpoKmUxGvRQAUFZWBgaDAUtLS6qKxM8//4z09HSN/06dOoXg4GDqbVSyaNGiFmdPw4YNU1oUhBZs4enpiYkTJ0IsFiMuLg5XrlyBubk5pFIpnj59Cg6HA2NjYzAYDHh6emLdunU4efIkEhIS2lz1rA2TJ0/G27dvcfjwYbx//x5MJpNwCj6fDz09PZSWlmL8+PHYsWMHfv/9d0ybNo16GxISiQQMBoMYtOfPn4+AgACMHz8e33zzDWJjY+Ho6IgXL15QL+0QBAIBmExmm+3E4/GwZ88ehISEwM7ODps3b8auXbv+kczJyJEjwefzsW/fPtTW1sLIyIgo8vPw8ICFhQUqKirg5uaGH3/8Ef369YObmxuSk5OVHgeAEj/sbDt1Z6ysrKCjo6P03OaiRYtgbGyMuXPnQiQS4dWrV3BxccHp06fh4OAAY2PjNo3H7Ymm/ayiooJ6qVpKSkrw/v17oq8NGTIEEyZMQP/+/fH1118jISEBAwcOVOqjAKA06c/lcjFt2jTo6+vj/PnzRMBhsVior68n7W8CQFNTE96+fUuSKSM6OhomJiY4cuQIAKCiogL19fXQ19dv03lD+f7m7du3FcqMY2NjMWPGDDg6OmLdunUqc9aaBO958+ZRRe0Cj8dDbGwsBg8eDA6HQ6zmqYhEIhw/fhz379+nqghU2aJv376QSCTEZrelpSV0dHTw559/IiMjAxwOBxkZGZDJZHjx4gWuXr2KyspKhIeHU2+lFD6fDycnJ6pYKbW1tcjKylI6kbGxsUF2djZ8fX3BZrNx8eJFwim4XC5kMhkeP36MsrIy1NTUwNjYWKOq7A+3A7Zv305UamqKUCiEmZkZSWZvbw8DAwO4uroqzHgrKipU2lFOXV0dVaSVneTnHC9evIjDhw9j48aNCA4OxuTJk3H48GHqrYHmvubm5qbRqq2hoQE5OTlKByUej4fi4mLU19fDxcUFFRUVuHnzJtCc+TA0NERRURGxTXLhwgWcOXMGBw4cQFBQEIYPH45z585Rb0vyw862E4/Hw4YNG2BlZYU9e/bg1KlT1CZYunQpJk6ciDt37mDZsmVUNTw9PbF69WpYWFiovAfU2MXQ0BA9evRQSJ+qs42c9+/fKx347ezscPnyZchkMnh7e4PJZEIikeDSpUtgs9kwMzPDf//7X+plWtFe44Gm/ay1yMeEixcvKryPVh1KA2dISAhsbGzw8uVLoshEng79cH9TGzw9PTFixAjY29vjt99+I+mampoUOrs2qNrfBIDr168TA0xAQIDKwKmvr9+mZ2gLc+fOxb59+/Du3TuMGTMGv/76q9Iy6AkTJuDzzz+nijVCLBaTKsRcXFxQV1eHJ0+e4NatW7h16xahq6iowLlz5+Di4kLIWiIiIgIeHh5UsVJqa2tRV1entJp0xYoVAIBffvkFDQ0NuHPnDgAgKCgI1tbWqKqqwtWrVyGTyZCfn6+yCpOKgYFBq1di3t7eiIqKgqmpKUluYGAACwsLTJgwAY2NjSTds2fPVA7I6tDGTmjFOcfhw4cjJCSEKlZKY2MjWCyW0uMy+/btA5pXLywWC9nZ2SguLgYAuLu7o76+Hg8ePIBAIICFhQUxMS4qKkKfPn3g7OxMup+ctvhhe9vJzc0N9vb2MDExgaurK1UNNP9nIgaDAScnJ/D5fIWx0c7ODjY2NjA2NlZaiCJn3LhxCAgIoIphZWUFGxsbODo6kuTqbNMSHwb43r17g8Vi4d69eyguLsbOnTtJbTkcDjw8PHDv3j1IpVIEBATgzZs3Kn8zOe01Hmjaz9A8aaqqqkJ+fj4EAgFMTU1VBmQ51L6iKUoDJ5fLhZGREQoLC4mHlKdDS0pKWvzRlDF16lRUVFRg+vTppC+yd+9e+Pn5wdDQkNReU+QFMXV1dcQP+CGWlpYwNjZGU1OT0hm+nHfv3qncG5QjEAgUZqzq0GRWiOaVJAD873//w7BhwxAaGordu3eT2sTGxkIsFrdpdiVHIBDAxsYGVVVVyM3NpapbxaZNm6iiViMQCGBnZweJREJM3D777DMwmUzk5eWpdQRVyGQyhYpqTcnJycH8+fOpYuLcV2JiYqt8oiVastPu3btJ/USTc47JyclITk6milsNn89HQ0MD8Xze3t7EMxcUFCissJydnVFdXa0QYORo4oeqaG87paamgs1mg8ViEVkyKsnJySgsLERWVpbS76TJPQDgp59+wk8//UQVY+/evSgrK8N3331HVbUL7u7uMDAwUNpnuFwuEhISYGlpCX19fbx58wYvXryAl5cXrl69qrbCuT3HA2jQz0QiEfr06QNra2uUlJQQdQ1z5syBSCQi4hiV1qb9Ve5xvn//njTQyNOhBQUFWLRoEWHkqqoq6OjoqN0fDAsLQ9++fXHixAmVg561tTVVBKFQ2GLBg7rzmwAQHBwMFouFp0+f4tKlS1Q10Lxcb2pqUpiNUvH09MSAAQM0/hMIBEq/lyoyMjKQn5+PsLAwhdT17NmzcezYMZKMijpbhIWF4cSJE1i5ciX4fD7MzMzw/PlzokMlJiZi1apV1Ms6BQ6HAyaTSXo+Jycn6OrqKn1vZEsYGRkBzROZroB8i4JqY7TBTm0559gWLC0tUV1dTWRI5CuYV69eKQSSyMhIcLlcnD17VunqQlM//CcRi8X45ZdfVI5beXl52LFjB65du0ZVEbR0j45AKpUqFL+guc7k+++/x5EjRyAQCIjq7idPngDNe4qHDx+Gl5cXQkJCIJVK8ezZM5iYmGD//v1ISEjAq1evYGtrS7pvR6Oun6E5yGdlZcHAwIBIm9+9exdmZmZKFztMJhM6OjpoamqiqjRCaeB89uwZ6uvriXy7UCjEiBEj0NTUhPLycnh4eODZs2cAgMrKStTX1ysdrAHA19cX06dPh0QiUfr2CvkXp+b25RWUmzdvVpuO69OnD0xMTBSOYPB4PCQmJmLo0KHEK81UzTosLCzw5s2bFgflQ4cOYf369Rr/bdq0SWVqWBVnz54Fm80m7WnMnDkTKSkpeP78OaktFXW2GDFiBLhcLnr27Im+ffvCyMgIZWVlQHMhmKOjY5c5+9nY2Ejq0EKhEN7e3pBKpcQRJk1hMBgwNTVFZWUl8aarzqa4uBhSqZRUsCSnNXbitfGcY1v40E4MBgPBwcEwNDRUOGYjFAoxadIkpKamYseOHSSdHE39kKZlKisrAUBhchYUFAQ/Pz9wOBy4u7vDxsYGNTU1eP78ORgMBsLDw1FSUoLc3FycP38e+/btA5fLxf3795GZmUmk3lsai9obdf3sr7/+wvbt22FlZYXq6mpir9LJyQk1NTUKEzg0B+LGxkYijmmL0sCZkpKC7OxsDB48GGKxGCKRCNevX4dMJsO4ceNgYmJCzGqvXr0KiUSiENX5fD5SUlKQlJQEFxcXeHl5kQoWoqOjceHCBYwePRpoTkulp6djyZIlAIDq6mqiiuqzzz4jrpOzefNmZGRkYPLkydDV1YWPjw9RzXr58mUcPXoUPj4+SEtLw5dffql0hovmmYqNjY3SFyd0BqmpqaisrMTYsWMJ2dKlS3H8+HFSO2WosgWazy39/fffcHZ2hpOTE3JzcxESEgKxWIyoqCicPn1aq83xjiQjIwP37t2Dh4cHxGIx1q9fDysrK0gkEly9epXaXC2+vr4wMzNTmorqTB49eoQePXoovAtTWzt19jnH9PR0sFgsrFmzBkePHoWvry9qa2tJBWy+vr6Ijo7GH3/8gW3btmHZsmUYNWoU6T5dzQ+7O/n5+aiurlbIeD1+/BgVFRWoqanB559/jvz8fBgYGGDNmjU4cuQIdHV1ceDAAQBAaWkpeDwezMzMiMmMh4cHEbCoZyA7EnX9TF4w6OrqSmQ6PD09YW9vj4KCAri5uSmMiQ4ODkSdRGtQGjhlMhmWLVsGkUiEgwcP4osvvsCGDRsQExODnTt3Ij4+nlgyy2QyFBQUwNraGkFBQcQ98vPzMXXqVPj7+8PPzw/+/v6YNWsWoT906BCGDh1K0gcHBxMp4FOnTmHEiBG4fPmy0uW0SCQi3kXr5+eHgIAABAcHIzg4GIMHD0ZAQACGDx+OdevWqd1j9Pf3h6mpaat/wPamsrISqampcHNzw6hRozB69GikpqYqLXyiosoWAPDjjz9CJBIhKSkJ0dHR+PLLL5GQkIDk5GRMnz5dZRVmZ+Dk5ISkpCSsWLEChw4dwqlTp9DQ0ICCggKt011eXl7Q09NTW4ncGdy/fx86OjoKBRTa2InRyeccORwO7ty5g9mzZ2Pfvn1ITk6GRCLBq1eviL0oHo+H+fPn4969e3j16hUWLlwIgUCgkI7tan7Y3cnOzkZZWRl4PB6pKKmwsBCLFy/G3r17kZCQgKVLl2LmzJlISkrCmjVrsGDBAlJhopubG5qamohMj7+/PyorK8FisTBlyhSiXUeiST8bMGAALCwsiExHYGAgGAwG8vLyEBMTQ5pAcLlcuLu7o6ysTKs97w9RGjjlZGdnIy0tjQg8hYWFOHfunEIgOnfuHBobG1vcj9QWLpcLKyurDl0t9O/fH69fv8aZM2eoqk7j7NmzAIAxY8YgLi4Ov//+O7WJStTZIjs7GxcuXCCCD/WzHKFQiIMHDyIiIgKmpqaIiYnBnj17FNKKHUFYWBh27dqFxMRENDQ04P79+xg4cCBkMhnS09OJdjExMRCLxejbty8cHBzw22+/KbzTk8FgwNvbG0VFRR1i34qKCjx8+FDBHzThzJkzKCoqgkAgUKj2pdqF+llOZ55z5HK52LFjB3bs2IFhw4YhNTWVOEJ048YNYltk/vz58PLywowZM/DNN98gOjoabDab2KKR05F+2BY7dTYPHjxQucXUEufPnweTycTQoUNJ8oqKCqSlpRGTFOrnD3F1dYVUKiXG4NraWujp6SEwMLBDbEVF037m7u4OQ0NDIujX1taivr4eo0aNQl5eHmnLLDAwECwWC+fPnydk2qLj7Oz8nipsDV9//TV8fHywfv16rff1VCESieDm5oZFixYpDBrtwZAhQ7Bs2TKkpqZ2uX/rdODAAfTr1w/p6emIi4ujqtXSEbb4p5g7dy5mzZqFW7duITExEfHx8ejXrx/EYrHW1aCRkZGIiorCwYMHW1W239GEhYVh3rx5SElJ6Xb/ycbb2xsbN25EXV0dfvjhB/Tr1w9TpkzB3bt3sXr1aq38tSv7YXdn165dMDU1xYIFC7SyiRz5ZPnDoDpgwAAUFRX9IxMRTfsZh8OBs7Mz6U1cyp6d0fzWpPr6esTHx7fqNwEAPTab/X9UYWvIzs7GwIEDIRAIcOnSJaUvINcGLpeLAQMG4Pjx40rPNLYVBoOBlStXQiKRYNu2bW1+3vamtrYWw4YNw5YtW7TeiG9vW/yTvH79Gs7OznB3d0d4eDjq6+uRmJio1aobzSnCRYsWIScnB0lJSVR1l+Dhw4cwNzdHaGgonj171q2KYsrLy2FtbQ13d3cEBwfDyckJYrEYW7du1aq/dXU/7O48fPgQQ4cOBZ/PV3mqQB0vX77Ey5cvSbLS0lLU1NSQZB2Fpv2spqZG4RiTsmePjY0Fn8/Hzz//3Ka40m4rTjQPVitWrMCDBw8UziF2NVatWgUrKyusW7eu1bOOrkx3skVHkJiYCIlEgi1btlBVXY64uDg4ODgoffPMx87H7oddAV9fXyxYsABpaWlK/xXhp8L48eMRERGBgwcPqiwW1ZR2DZw0NDQ0NDQfO2qLg2hoaGhoaGjI0IGThoaGhoZGC+jASUNDQ0NDowV04KShoaGhodECOnDS0NDQ0NBoAR04aWhoaGhotOD/ASO/eY8uKI/tAAAAAElFTkSuQmCC" /></p>
+<p>Di dalam kode, dataset memiliki 4 fitur (sepal_length, sepal_width, petal_length, petal_width), sehingga Euclidean Distance antara dua sampel dihitung sebagai:</p>
+<p><img alt="image.png" src="data:image/png;base64,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" /></p>
+</section>
+<section id="bagaimana-euclidean-distance-digunakan-dalam-knn-outlier-detection">
+<h3><strong>Bagaimana Euclidean Distance Digunakan dalam KNN Outlier Detection?</strong><a class="headerlink" href="#bagaimana-euclidean-distance-digunakan-dalam-knn-outlier-detection" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Membentuk Data</p></li>
+</ol>
+<ul class="simple">
+<li><p>Dataset memiliki beberapa sampel dengan fitur sepal_length, sepal_width, petal_length, petal_width.</p></li>
+<li><p>Data ini digunakan untuk menghitung jarak antar titik.</p></li>
+</ul>
+<ol class="arabic simple" start="2">
+<li><p>Menentukan Tetangga Terdekat (KNN)</p></li>
+</ol>
+<ul class="simple">
+<li><p>Model LocalOutlierFactor (LOF) digunakan dengan k=5, artinya setiap titik dibandingkan dengan 5 tetangga terdekat.</p></li>
+<li><p>Jarak dihitung menggunakan Euclidean Distance.</p></li>
+</ul>
+<ol class="arabic simple" start="3">
+<li><p>Menghitung Skor Outlier</p></li>
+</ol>
+<ul class="simple">
+<li><p>Local Outlier Factor (LOF) menilai apakah suatu titik adalah outlier berdasarkan rata-rata jarak K tetangga terdekatnya.</p></li>
+<li><p>LOF akan memberikan negative outlier factor (-LOF.negative_outlier_factor_), yang dikonversi ke nilai positif sebagai “distance score” untuk mempermudah interpretasi.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tabulate</span><span class="w"> </span><span class="kn">import</span> <span class="n">tabulate</span>
+
+<span class="c1"># Pastikan combined_df sudah berisi data</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">combined_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+    <span class="c1"># Tetapkan threshold berdasarkan quantile</span>
+    <span class="n">threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">combined_df</span><span class="p">[</span><span class="s2">&quot;distance&quot;</span><span class="p">],</span> <span class="mf">99.999</span><span class="p">)</span>  <span class="c1"># Misalnya 99th percentile</span>
+    <span class="n">outliers</span> <span class="o">=</span> <span class="n">combined_df</span><span class="p">[</span><span class="n">combined_df</span><span class="p">[</span><span class="s2">&quot;distance&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">]</span>  <span class="c1"># Data yang dianggap outlier</span>
+
+    <span class="c1"># Tampilkan hanya data outlier dengan tabulate</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Data Outlier:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">tabulate</span><span class="p">(</span><span class="n">outliers</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="s1">&#39;keys&#39;</span><span class="p">,</span> <span class="n">tablefmt</span><span class="o">=</span><span class="s1">&#39;psql&#39;</span><span class="p">))</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Data gabungan kosong. Pastikan koneksi ke database berhasil dan data tersedia.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="penjelasan-kode">
+<h3><strong>Penjelasan Kode</strong><a class="headerlink" href="#penjelasan-kode" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">not</span> <span class="pre">combined_df.empty:</span></code></p>
+<ul class="simple">
+<li><p>combined_df.empty → Mengecek apakah combined_df kosong atau tidak.</p></li>
+<li><p>not combined_df.empty → Jika combined_df tidak kosong, maka lanjut ke proses berikutnya.</p></li>
+<li><p>Jika combined_df kosong, maka program akan mencetak pesan error.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">threshold</span> <span class="pre">=</span> <span class="pre">np.percentile(combined_df[&quot;distance&quot;],</span> <span class="pre">99.999)</span></code></p>
+<ul class="simple">
+<li><p>np.percentile() → Menghitung persentil dari kolom distance dalam combined_df.</p></li>
+<li><p>Persentil 99.999 → Menentukan batas threshold untuk outlier.</p></li>
+<li><p>Semua data yang memiliki “distance” lebih besar dari threshold ini akan dianggap sebagai outlier.</p></li>
+</ul>
+<p>📌 Penjelasan Threshold:</p>
+<ul class="simple">
+<li><p>Misalkan kita memiliki 1.000.000 data, maka hanya 1 data (0.001%) yang akan dianggap sebagai outlier dengan threshold 99.999th percentile.</p></li>
+<li><p>Semakin tinggi nilai persentil, semakin sedikit data yang dianggap outlier</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="c1"># Pastikan combined_df sudah berisi data</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">combined_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+    <span class="c1"># Tetapkan threshold berdasarkan quantile</span>
+    <span class="n">threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">combined_df</span><span class="p">[</span><span class="s2">&quot;distance&quot;</span><span class="p">],</span> <span class="mf">99.999</span><span class="p">)</span>
+
+    <span class="c1"># Pisahkan data inlier dan outlier</span>
+    <span class="n">outliers</span> <span class="o">=</span> <span class="n">combined_df</span><span class="p">[</span><span class="n">combined_df</span><span class="p">[</span><span class="s2">&quot;distance&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">]</span>
+    <span class="n">inliers</span> <span class="o">=</span> <span class="n">combined_df</span><span class="p">[</span><span class="n">combined_df</span><span class="p">[</span><span class="s2">&quot;distance&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">threshold</span><span class="p">]</span>
+
+    <span class="c1"># Plot scatter plot</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+    <span class="c1"># Plot inlier (data normal)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">inliers</span><span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">inliers</span><span class="p">[</span><span class="s2">&quot;sepal_width&quot;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Inliers&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+
+    <span class="c1"># Plot outlier (data yang dideteksi sebagai outlier)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">outliers</span><span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">outliers</span><span class="p">[</span><span class="s2">&quot;sepal_width&quot;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Outliers&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,)</span>
+
+    <span class="c1"># Tambahkan judul dan label</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Visualisasi Outlier dengan Scatter Plot&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Sepal Length&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Sepal Width&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Data gabungan kosong. Pastikan koneksi ke database berhasil dan data tersedia.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="elemen-elemen-dalam-scatter-plot">
+<h3><strong>Elemen-elemen dalam Scatter Plot</strong><a class="headerlink" href="#elemen-elemen-dalam-scatter-plot" title="Link to this heading">#</a></h3>
+<p>Scatter plot adalah grafik yang digunakan untuk menunjukkan hubungan antara dua variabel numerik. Berikut adalah elemen-elemen utama dalam scatter plot:</p>
+<ol class="arabic simple">
+<li><p><strong>Sumbu X (X-Axis)</strong></p>
+<ul class="simple">
+<li><p>Menampilkan variabel pertama yang digunakan sebagai <strong>independen (predictor)</strong>.</p></li>
+<li><p>Dalam kasus analisis outlier, bisa berupa <strong>sepal_length</strong> atau <strong>petal_length</strong>.</p></li>
+</ul>
+</li>
+<li><p><strong>Sumbu Y (Y-Axis)</strong></p>
+<ul class="simple">
+<li><p>Menampilkan variabel kedua yang digunakan sebagai <strong>dependen (response)</strong>.</p></li>
+<li><p>Misalnya, <strong>sepal_width</strong> atau <strong>petal_width</strong>.</p></li>
+</ul>
+</li>
+<li><p><strong>Titik Data (Data Points)</strong></p>
+<ul class="simple">
+<li><p>Setiap titik mewakili <strong>satu observasi</strong> dalam dataset.</p></li>
+<li><p>Posisi titik ditentukan oleh nilai pada <strong>sumbu X dan Y</strong>.</p></li>
+</ul>
+</li>
+<li><p><strong>Warna dan Bentuk Titik (Color &amp; Marker Style)</strong></p>
+<ul class="simple">
+<li><p>Warna dapat digunakan untuk membedakan <strong>inlier (data normal) dan outlier</strong>.</p></li>
+<li><p>Biasanya:</p>
+<ul>
+<li><p><strong>Biru</strong> untuk data normal.</p></li>
+<li><p><strong>Merah</strong> untuk outlier.</p></li>
+</ul>
+</li>
+<li><p>Marker bisa berbentuk <strong>lingkaran (o) untuk data normal</strong> dan <strong>X untuk outlier</strong>.</p></li>
+</ul>
+</li>
+<li><p><strong>Judul Plot (Title)</strong></p>
+<ul class="simple">
+<li><p>Menjelaskan isi scatter plot, misalnya:<br />
+<em>“Visualisasi Outlier pada Sepal Length vs. Sepal Width”</em></p></li>
+</ul>
+</li>
+<li><p><strong>Label Sumbu (Axis Labels)</strong></p>
+<ul class="simple">
+<li><p>Menunjukkan apa yang diwakili oleh <strong>sumbu X</strong> dan <strong>sumbu Y</strong>.</p></li>
+<li><p>Contoh:</p>
+<ul>
+<li><p><strong>X-Axis:</strong> <em>“Sepal Length (cm)”</em></p></li>
+<li><p><strong>Y-Axis:</strong> <em>“Sepal Width (cm)”</em></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Legenda (Legend)</strong></p>
+<ul class="simple">
+<li><p>Menjelaskan arti warna atau bentuk titik data.</p></li>
+<li><p>Contoh:</p>
+<ul>
+<li><p><strong>Biru:</strong> Data Normal</p></li>
+<li><p><strong>Merah:</strong> Outlier</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Grid (Opsional)</strong></p>
+<ul class="simple">
+<li><p>Garis bantu untuk memudahkan membaca nilai titik data.</p></li>
+<li><p>Bisa diaktifkan menggunakan <code class="docutils literal notranslate"><span class="pre">plt.grid(True)</span></code>.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="kesimpulan">
+<h3><strong>Kesimpulan</strong><a class="headerlink" href="#kesimpulan" title="Link to this heading">#</a></h3>
+<p>Scatter plot membantu <strong>menganalisis pola dan distribusi data</strong>, serta <strong>mengidentifikasi outlier</strong> dengan visual yang jelas. 🚀</p>
+</section>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="kelebihan-kekurangan-knn">
+<h1><strong>Kelebihan &amp; Kekurangan KNN</strong><a class="headerlink" href="#kelebihan-kekurangan-knn" title="Link to this heading">#</a></h1>
+<p>✅ Kelebihan:</p>
+<ul class="simple">
+<li><p>Mudah diimplementasikan &amp; tidak membutuhkan pelatihan model kompleks.</p></li>
+<li><p>Bisa digunakan untuk klasifikasi, regresi, dan deteksi outlier.</p></li>
+<li><p>Akurasi tinggi untuk dataset kecil hingga menengah.</p></li>
+</ul>
+<p>❌ Kekurangan:</p>
+<ul class="simple">
+<li><p>Lambat untuk dataset besar (harus menghitung jarak ke semua titik).</p></li>
+<li><p>Sensitif terhadap skala fitur (perlu normalisasi).</p></li>
+<li><p>Pemilihan 𝑘 sangat krusial untuk hasil yang baik.</p></li>
+</ul>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Penambangan%20Data%20_Data%20Understanding.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><strong>Data Understanding</strong></p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Local%20Outlier%20Factor%20%28LOF%29.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><strong>Local Outlier Factor</strong></p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#"><strong>Mendeteksi Outlier Menggunakan K-Nearest Neighbors (KNN)</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#apa-itu-deteksi-outlier"><strong>1. Apa Itu Deteksi Outlier?</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#metode-knn-dalam-deteksi-outlier"><strong>2. Metode KNN dalam Deteksi Outlier</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#perhitungan-euclidean-distance-dalam-knn"><strong>3. Perhitungan Euclidean Distance dalam KNN</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#rata-rata-jarak-k-tetangga-terdekat"><strong>4. Rata-rata Jarak k Tetangga Terdekat</strong></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#langkah-langkah-mendeteksi-outlier"><strong>5. Langkah-Langkah Mendeteksi Outlier</strong></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mengambil-data-postgresql"><strong>Mengambil Data PostgreSQL:</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mengambil-data-mysql"><strong>Mengambil Data MySQL:</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#menggabungkan-database-mysql-dan-postgresql"><strong>Menggabungkan Database MySQL dan PostgreSQL</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kode-yang-digunakan-untuk-mencari-knn-dengan-perhitungan-euclidean-distance"><strong>Kode yang digunakan untuk mencari KNN dengan Perhitungan Euclidean Distance</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#penjelasan-perhitungan-euclidean-distance-pada-knn-pada-code"><strong>Penjelasan Perhitungan Euclidean Distance pada KNN pada code</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#apa-itu-euclidean-distance"><strong>Apa itu Euclidean Distance?</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bagaimana-euclidean-distance-digunakan-dalam-knn-outlier-detection"><strong>Bagaimana Euclidean Distance Digunakan dalam KNN Outlier Detection?</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#penjelasan-kode"><strong>Penjelasan Kode</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#elemen-elemen-dalam-scatter-plot"><strong>Elemen-elemen dalam Scatter Plot</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kesimpulan"><strong>Kesimpulan</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#kelebihan-kekurangan-knn"><strong>Kelebihan &amp; Kekurangan KNN</strong></a></li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
