@@ -25,41 +25,47 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-try:
-    file_path = 'secondary_data.csv'
-    df = pd.read_csv(file_path, sep=';')
-    print(f"Dataset berhasil dimuat. Ukuran data: {df.shape[0]} baris, {df.shape[1]} kolom.")
-except FileNotFoundError:
-    print(f"ERROR: File '{file_path}' tidak ditemukan.")
-    print(">>> Pastikan Anda telah mengunggah file dataset ke sesi Colab ini. <<<")
-    # Hentikan eksekusi jika file tidak ada
-    # exit()
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
 
-# Menampilkan 5 baris pertama untuk melihat struktur data
-print("\n(a) Contoh Data (5 Baris Pertama):")
-print(df.head())
+# Misalkan cleaned_rows sudah berisi data yang sudah dibersihkan
+val_X = cleaned_rows[1:]  # Hapus header jika ada, dan gunakan data
 
-# Penjelasan fitur (sesuai dokumentasi)
-print("\n(a) Penjelasan Fitur:")
-# Anda dapat menambahkan penjelasan fitur di sini jika diperlukan
+# KMeans untuk 2 klaster
+kmeans = KMeans(n_clusters=2, random_state=42, n_init=5, max_iter=400, tol=0.0001, algorithm='lloyd')
+kmeans.fit(val_X)
+
+# Reduksi dimensi dengan PCA ke 2D untuk visualisasi
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(val_X)
+
+# Visualisasi hasil clustering
+plt.figure(figsize=(8, 6))
+plt.scatter(X_pca[:, 0], X_pca[:, 1], c=kmeans.labels_, cmap='viridis', label='Data Points')
+
+# Menambahkan centroid ke visualisasi
+centroids = pca.transform(kmeans.cluster_centers_)  # Transform centroid ke dalam dimensi 2D
+plt.scatter(centroids[:, 0], centroids[:, 1], s=200, c='red', marker='X', label='Centroids')
+
+# Menambahkan label dan judul
+plt.title('Visualisasi K-Means dengan 2 Klaster dan Centroid')
+plt.xlabel('PCA 1')
+plt.ylabel('PCA 2')
+plt.legend()
+plt.show()
 
 ------------------
 
------ stdout -----
-ERROR: File 'secondary_data.csv' tidak ditemukan.
->>> Pastikan Anda telah mengunggah file dataset ke sesi Colab ini. <<<
-
-(a) Contoh Data (5 Baris Pertama):
-------------------
 
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mNameError[0m                                 Traceback (most recent call last)
-[0;32m/tmp/ipython-input-3070422781.py[0m in [0;36m<cell line: 0>[0;34m()[0m
-[1;32m     11[0m [0;31m# Menampilkan 5 baris pertama untuk melihat struktur data[0m[0;34m[0m[0;34m[0m[0m
-[1;32m     12[0m [0mprint[0m[0;34m([0m[0;34m"\n(a) Contoh Data (5 Baris Pertama):"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0;32m---> 13[0;31m [0mprint[0m[0;34m([0m[0mdf[0m[0;34m.[0m[0mhead[0m[0;34m([0m[0;34m)[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m[1;32m     14[0m [0;34m[0m[0m
-[1;32m     15[0m [0;31m# Penjelasan fitur (sesuai dokumentasi)[0m[0;34m[0m[0;34m[0m[0m
+[0;32m/tmp/ipython-input-2313803382.py[0m in [0;36m<cell line: 0>[0;34m()[0m
+[1;32m      4[0m [0;34m[0m[0m
+[1;32m      5[0m [0;31m# Misalkan cleaned_rows sudah berisi data yang sudah dibersihkan[0m[0;34m[0m[0;34m[0m[0m
+[0;32m----> 6[0;31m [0mval_X[0m [0;34m=[0m [0mcleaned_rows[0m[0;34m[[0m[0;36m1[0m[0;34m:[0m[0;34m][0m  [0;31m# Hapus header jika ada, dan gunakan data[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m      7[0m [0;34m[0m[0m
+[1;32m      8[0m [0;31m# KMeans untuk 2 klaster[0m[0;34m[0m[0;34m[0m[0m
 
-[0;31mNameError[0m: name 'df' is not defined
+[0;31mNameError[0m: name 'cleaned_rows' is not defined
 

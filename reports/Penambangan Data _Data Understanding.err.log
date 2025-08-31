@@ -1,27 +1,27 @@
 Traceback (most recent call last):
-  File "/usr/local/lib/python3.11/dist-packages/jupyter_core/utils/__init__.py", line 154, in wrapped
+  File "/usr/local/lib/python3.12/dist-packages/jupyter_core/utils/__init__.py", line 154, in wrapped
     asyncio.get_running_loop()
 RuntimeError: no running event loop
 
 During handling of the above exception, another exception occurred:
 
 Traceback (most recent call last):
-  File "/usr/local/lib/python3.11/dist-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+  File "/usr/local/lib/python3.12/dist-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
     executenb(
-  File "/usr/local/lib/python3.11/dist-packages/nbclient/client.py", line 1319, in execute
+  File "/usr/local/lib/python3.12/dist-packages/nbclient/client.py", line 1319, in execute
     return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/dist-packages/jupyter_core/utils/__init__.py", line 158, in wrapped
+  File "/usr/local/lib/python3.12/dist-packages/jupyter_core/utils/__init__.py", line 158, in wrapped
     return loop.run_until_complete(inner)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
     return future.result()
            ^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/dist-packages/nbclient/client.py", line 709, in async_execute
+  File "/usr/local/lib/python3.12/dist-packages/nbclient/client.py", line 709, in async_execute
     await self.async_execute_cell(
-  File "/usr/local/lib/python3.11/dist-packages/nbclient/client.py", line 1062, in async_execute_cell
+  File "/usr/local/lib/python3.12/dist-packages/nbclient/client.py", line 1062, in async_execute_cell
     await self._check_raise_for_error(cell, cell_index, exec_reply)
-  File "/usr/local/lib/python3.11/dist-packages/nbclient/client.py", line 918, in _check_raise_for_error
+  File "/usr/local/lib/python3.12/dist-packages/nbclient/client.py", line 918, in _check_raise_for_error
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
@@ -109,35 +109,35 @@ Error connecting to PostgreSQL: could not translate host name "postgre23-112-pos
 
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mKeyError[0m                                  Traceback (most recent call last)
-[0;32m/tmp/ipython-input-5-309723036.py[0m in [0;36m<cell line: 0>[0;34m()[0m
+[0;32m/tmp/ipython-input-309723036.py[0m in [0;36m<cell line: 0>[0;34m()[0m
 [1;32m     68[0m [0;34m[0m[0m
 [1;32m     69[0m [0;31m# Gabungkan data berdasarkan id dan class[0m[0;34m[0m[0;34m[0m[0m
 [0;32m---> 70[0;31m [0mcombined_df[0m [0;34m=[0m [0mpd[0m[0;34m.[0m[0mmerge[0m[0;34m([0m[0mpostgres_df[0m[0;34m,[0m [0mmysql_df[0m[0;34m,[0m [0mon[0m[0;34m=[0m[0;34m[[0m[0;34m"id"[0m[0;34m,[0m [0;34m"class"[0m[0;34m][0m[0;34m,[0m [0mhow[0m[0;34m=[0m[0;34m"inner"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
 [0m[1;32m     71[0m [0;31m# combined_df = combined_df.apply(pd.to_numeric, errors='coerce')  # Mengubah semua kolom ke float[0m[0;34m[0m[0;34m[0m[0m
 [1;32m     72[0m [0;31m# Tampilkan hasil[0m[0;34m[0m[0;34m[0m[0m
 
-[0;32m/usr/local/lib/python3.11/dist-packages/pandas/core/reshape/merge.py[0m in [0;36mmerge[0;34m(left, right, how, on, left_on, right_on, left_index, right_index, sort, suffixes, copy, indicator, validate)[0m
+[0;32m/usr/local/lib/python3.12/dist-packages/pandas/core/reshape/merge.py[0m in [0;36mmerge[0;34m(left, right, how, on, left_on, right_on, left_index, right_index, sort, suffixes, copy, indicator, validate)[0m
 [1;32m    168[0m         )
 [1;32m    169[0m     [0;32melse[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
 [0;32m--> 170[0;31m         op = _MergeOperation(
 [0m[1;32m    171[0m             [0mleft_df[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
 [1;32m    172[0m             [0mright_df[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
 
-[0;32m/usr/local/lib/python3.11/dist-packages/pandas/core/reshape/merge.py[0m in [0;36m__init__[0;34m(self, left, right, how, on, left_on, right_on, left_index, right_index, sort, suffixes, indicator, validate)[0m
+[0;32m/usr/local/lib/python3.12/dist-packages/pandas/core/reshape/merge.py[0m in [0;36m__init__[0;34m(self, left, right, how, on, left_on, right_on, left_index, right_index, sort, suffixes, indicator, validate)[0m
 [1;32m    792[0m             [0mleft_drop[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
 [1;32m    793[0m             [0mright_drop[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
 [0;32m--> 794[0;31m         ) = self._get_merge_keys()
 [0m[1;32m    795[0m [0;34m[0m[0m
 [1;32m    796[0m         [0;32mif[0m [0mleft_drop[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
 
-[0;32m/usr/local/lib/python3.11/dist-packages/pandas/core/reshape/merge.py[0m in [0;36m_get_merge_keys[0;34m(self)[0m
+[0;32m/usr/local/lib/python3.12/dist-packages/pandas/core/reshape/merge.py[0m in [0;36m_get_merge_keys[0;34m(self)[0m
 [1;32m   1295[0m                         [0mrk[0m [0;34m=[0m [0mcast[0m[0;34m([0m[0mHashable[0m[0;34m,[0m [0mrk[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
 [1;32m   1296[0m                         [0;32mif[0m [0mrk[0m [0;32mis[0m [0;32mnot[0m [0;32mNone[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
 [0;32m-> 1297[0;31m                             [0mright_keys[0m[0;34m.[0m[0mappend[0m[0;34m([0m[0mright[0m[0;34m.[0m[0m_get_label_or_level_values[0m[0;34m([0m[0mrk[0m[0;34m)[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
 [0m[1;32m   1298[0m                         [0;32melse[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
 [1;32m   1299[0m                             [0;31m# work-around for merge_asof(right_index=True)[0m[0;34m[0m[0;34m[0m[0m
 
-[0;32m/usr/local/lib/python3.11/dist-packages/pandas/core/generic.py[0m in [0;36m_get_label_or_level_values[0;34m(self, key, axis)[0m
+[0;32m/usr/local/lib/python3.12/dist-packages/pandas/core/generic.py[0m in [0;36m_get_label_or_level_values[0;34m(self, key, axis)[0m
 [1;32m   1909[0m             [0mvalues[0m [0;34m=[0m [0mself[0m[0;34m.[0m[0maxes[0m[0;34m[[0m[0maxis[0m[0;34m][0m[0;34m.[0m[0mget_level_values[0m[0;34m([0m[0mkey[0m[0;34m)[0m[0;34m.[0m[0m_values[0m[0;34m[0m[0;34m[0m[0m
 [1;32m   1910[0m         [0;32melse[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
 [0;32m-> 1911[0;31m             [0;32mraise[0m [0mKeyError[0m[0;34m([0m[0mkey[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
